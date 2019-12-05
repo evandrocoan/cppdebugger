@@ -208,11 +208,9 @@ TINYFORMAT_FOREACH_ARGNUM(TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT)
   { \
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
-      /* std::clock_t ctime_clock_now = std::clock(); */ \
-      _TINYFORMAT_FORMATTER_DEBUGGER_TIME_STAMP_HEADER(level) \
+      _TINYFORMAT_FORMATTER_DEBUGGER_TIME_STAMP_HEADER( level ) \
       _TINYFORMAT_FORMATTER_DEBUGGER_TIME_FILE_PATH_HEADER( level ) \
       std::cerr << secure_tinyformat( __VA_ARGS__ ) << std::endl; \
-      /* _debugger_current_saved_c_time = ctime_clock_now; */ \
     } \
   } \
   while( 0 )
@@ -225,11 +223,9 @@ TINYFORMAT_FOREACH_ARGNUM(TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT)
   { \
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
-      /* std::clock_t ctime_clock_now = std::clock(); */ \
-      _TINYFORMAT_FORMATTER_DEBUGGER_TIME_STAMP_HEADER(level) \
+      _TINYFORMAT_FORMATTER_DEBUGGER_TIME_STAMP_HEADER( level ) \
       _TINYFORMAT_FORMATTER_DEBUGGER_TIME_FILE_PATH_HEADER( level ) \
       std::cerr << secure_tinyformat( __VA_ARGS__ ); \
-      /* _debugger_current_saved_c_time = ctime_clock_now; */ \
     } \
   } \
   while( 0 )
