@@ -36,12 +36,11 @@
 // https://stackoverflow.com/questions/1433204/how-do-i-use-extern-to-share-variables-between-source-files
 #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_PUT_STDERR_TO_FILE
 
+  // http://www.cplusplus.com/reference/cstdio/freopen/
   FileDebugSingleton::FileDebugSingleton()
   {
     FileDebugSingleton::isstarted = true;
-
-    // http://www.cplusplus.com/reference/cstdio/freopen/
-    freopen( TINYFORMAT_FORMATTER_STDERR_DEBUG_FILEPATH, "a", stderr );
+    freopen( FileDebugSingleton::getFile(), "a", stderr );
   }
 
   FileDebugSingleton::~FileDebugSingleton() {

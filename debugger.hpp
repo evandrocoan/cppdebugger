@@ -124,6 +124,12 @@ TINYFORMAT_FOREACH_ARGNUM(TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT)
     public:
       ~FileDebugSingleton();
       static FileDebugSingleton* getInstance();
+
+      // Force to use the correc value of `TINYFORMAT_FORMATTER_STDERR_DEBUG_FILEPATH` defined when
+      // this header was included for the first time.
+      static const char* getFile() {
+        return TINYFORMAT_FORMATTER_STDERR_DEBUG_FILEPATH;
+      }
     };
   #endif
 
