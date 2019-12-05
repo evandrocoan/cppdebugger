@@ -2,7 +2,7 @@
 *
 *   Copyright 2019 @ Evandro Coan, https://github.com/evandrocoan
 *
-*   Version: 1.0.0
+*   Tinyformat Formatter Debugger Version: 1.0.0
 *   Always ensure you are using the latest version by checking:
 *   https://gist.github.com/evandrocoan/ecc2f48c0f46391d4c1cc4a0709c847c
 *
