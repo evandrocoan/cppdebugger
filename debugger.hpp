@@ -2,9 +2,9 @@
 *
 *   Copyright 2019 @ Evandro Coan, https://github.com/evandrocoan
 *
-*   Tinyformat Formatter Debugger C++ 98 Version: 1.0.0
+*   Tinyformat Formatter Debugger C++ 11 Version: 1.0.0
 *   Always ensure you are using the latest version by checking:
-*   https://gist.github.com/evandrocoan/a3d13a0e7c852fd079189330201c88d7
+*   https://gist.github.com/evandrocoan/2a5c60b230c90dfe1393b632c5bc83b2
 *
 *  This program is free software; you can redistribute it and/or modify it
 *  under the terms of the GNU Lesser General Public License as published by the
@@ -27,49 +27,70 @@
 #ifndef TINYFORMAT_FORMATTER_DEBUGGER_APP_H
 #define TINYFORMAT_FORMATTER_DEBUGGER_APP_H
 
-#define TINYFORMAT_FORMATTER_STDERR_DEBUG_FILEPATH "/var/log/stderr.log"
+// Uncomment this `TINYFORMAT_NO_VARIADIC_TEMPLATES` to force using C++ 98 Standard
+// #define TINYFORMAT_NO_VARIADIC_TEMPLATES
+#define TINYFORMAT_FORMATTER_STDERR_DEBUG_FILEPATH "stderr.log"
 
 
 // https://en.cppreference.com/w/cpp/error/runtime_error
 #include <stdexcept>
 
-// https://github.com/c42f/tinyformat  --  C like printf support on C++
-// https://github.com/bitcoin/bitcoin/issues/9423  --  tinyformat: Too many conversion specifiers in format string
+// C like printf support on C++
+// https://github.com/c42f/tinyformat
+// https://github.com/bitcoin/bitcoin/issues/9423
 #define TINYFORMAT_ERROR(reasonString) throw std::runtime_error(reasonString)
 #include "tinyformat.h"
 
-// Create a nth "variadic" template, see `tinyformat.h` variables TINYFORMAT_ARGTYPES_1, 2, 3... etc
-#define TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT(n) template<TINYFORMAT_ARGTYPES(n)> \
-std::string secure_tinyformat(const char *formattings, TINYFORMAT_VARARGS(n)) \
-{ \
-  try { \
-    return tfm::format( formattings, TINYFORMAT_PASSARGS(n) ); \
-  } \
-  catch (std::runtime_error &error) { \
-    return std::string( error.what() ) + std::string( ": '" ) + std::string( formattings ) + std::string( "'" ); \
-  } \
-  catch (...) { \
-    return std::string( "Unknown error on the formating string: " ) + std::string( ": '" ) + std::string( formattings ) + std::string( "'" ); \
-  } \
-}
+#if defined(TINYFORMAT_USE_VARIADIC_TEMPLATES)
+  // https://github.com/laanwj/bitcoin/blob/3b092bd9b6b3953d5c3052d57e4827dbd85941fd/src/util.h
+  template<typename... Args>
+  std::string secure_tinyformat(const char *formattings, const Args&... arguments)
+  {
+    try {
+      return tfm::format( formattings, arguments... );
+    }
+    catch (std::runtime_error &error) {
+      return std::string( error.what() ) + std::string( ": " ) + std::string( formattings );
+    }
+    catch (...) {
+      return std::string( "Unknown error on the formating string: " ) + std::string( formattings );
+    }
+  }
 
-// Define a basic "variadic" template case with 0 parameters
-inline std::string secure_tinyformat(const char *formattings)
-{
-  try {
-    return tfm::format( formattings );
+#else
+  // Create a nth "variadic" template, see `tinyformat.h` variables TINYFORMAT_ARGTYPES_1, 2, 3... etc
+  #define TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT(n) template<TINYFORMAT_ARGTYPES(n)> \
+  std::string secure_tinyformat(const char *formattings, TINYFORMAT_VARARGS(n)) \
+  { \
+    try { \
+      return tfm::format( formattings, TINYFORMAT_PASSARGS(n) ); \
+    } \
+    catch (std::runtime_error &error) { \
+      return std::string( error.what() ) + std::string( ": '" ) + std::string( formattings ) + std::string( "'" ); \
+    } \
+    catch (...) { \
+      return std::string( "Unknown error on the formating string: " ) + std::string( ": '" ) + std::string( formattings ) + std::string( "'" ); \
+    } \
   }
-  catch (std::runtime_error &error) {
-    return std::string( error.what() ) + std::string( ": '" ) + std::string( formattings ) + std::string( "'" );
-  }
-  catch (...) {
-    return std::string( "Unknown error on the formating string: " ) + std::string( ": '" ) + std::string( formattings ) + std::string( "'" );
-  }
-}
 
-// Create the "variadic" templates for C++ 98 from 1 up to the maximum defined on
-// `tinyformat.h` variables TINYFORMAT_ARGTYPES_1, 2, 3... etc
-TINYFORMAT_FOREACH_ARGNUM(TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT)
+  // Define a basic "variadic" template case with 0 parameters
+  inline std::string secure_tinyformat(const char *formattings)
+  {
+    try {
+      return tfm::format( formattings );
+    }
+    catch (std::runtime_error &error) {
+      return std::string( error.what() ) + std::string( ": '" ) + std::string( formattings ) + std::string( "'" );
+    }
+    catch (...) {
+      return std::string( "Unknown error on the formating string: " ) + std::string( ": '" ) + std::string( formattings ) + std::string( "'" );
+    }
+  }
+
+  // Create the "variadic" templates for C++ 98 from 1 up to the maximum defined on
+  // `tinyformat.h` variables TINYFORMAT_ARGTYPES_1, 2, 3... etc
+  TINYFORMAT_FOREACH_ARGNUM(TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT)
+#endif
 
 
 // https://stackoverflow.com/questions/3781520/how-to-test-if-preprocessor-symbol-is-defined-but-has-no-value
@@ -108,9 +129,8 @@ TINYFORMAT_FOREACH_ARGNUM(TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT)
 /**
  * Control all program debugging.
  */
-#if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL > TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_DISABLED_DEBUG
+#if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL > TINYFORMAT_FORMATTER_DEBUG_LEVEL_DISABLED_DEBUG
   #include <iostream>
-  #include <sys/time.h>
 
   #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_PUT_STDERR_TO_FILE
     class FileDebugSingleton
@@ -126,36 +146,115 @@ TINYFORMAT_FOREACH_ARGNUM(TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT)
     };
   #endif
 
-  inline int TINYFORMAT_FORMATTER_timeval_subtract(struct timeval *result, struct timeval *t2, struct timeval *t1)
-  {
-    long int diff = (t2->tv_usec + 1000000 * t2->tv_sec) - (t1->tv_usec + 1000000 * t1->tv_sec);
-    result->tv_sec = diff / 1000000;
-    result->tv_usec = diff % 1000000;
-    return (diff<0);
-  }
+  #if defined(TINYFORMAT_USE_VARIADIC_TEMPLATES)
+    #include <chrono>
+    #include <ctime>
 
-  extern struct timeval TINYFORMAT_FORMATTER_timevalBegin;
-  extern struct timeval TINYFORMAT_FORMATTER_timevalEnd;
-  extern struct timeval TINYFORMAT_FORMATTER_timevalDiff;
+    // http://en.cppreference.com/w/cpp/chrono/c/clock
+    // https://stackoverflow.com/questions/12392278/measure-time-in-linux-time-vs-clock-vs-getrusage-vs-clock-gettime-vs-gettimeof
+    extern std::clock_t _debugger_current_saved_c_time;
+    extern std::chrono::time_point< std::chrono::high_resolution_clock > _debugger_current_saved_chrono_time;
 
-  // Initialize the variable on system start up
-  inline timeval TINYFORMAT_FORMATTER_gettimeofday(struct timeval *result) {
-    gettimeofday(result, NULL);
-    return *result;
-  }
+    #define DEBUGGER_TIME_HEADER \
+      /* std::clock_t ctime_clock_now = std::clock(); */ \
+      auto chrono_clock_now = std::chrono::high_resolution_clock::now(); \
+      auto duration = chrono_clock_now.time_since_epoch(); \
+      /* typedef std::chrono::duration< int, std::ratio_multiply< std::chrono::hours::period, std::ratio< 21 > >::type > Days; */ \
+      /* Days days = std::chrono::duration_cast< Days >( duration ); */ \
+      /* duration -= days; */ \
+      auto hours = std::chrono::duration_cast< std::chrono::hours >( duration ); \
+      duration -= hours; \
+      auto minutes = std::chrono::duration_cast< std::chrono::minutes >( duration ); \
+      duration -= minutes; \
+      auto seconds = std::chrono::duration_cast< std::chrono::seconds >( duration ); \
+      duration -= seconds; \
+      auto milliseconds = std::chrono::duration_cast< std::chrono::milliseconds >( duration ); \
+      duration -= milliseconds; \
+      auto microseconds = std::chrono::duration_cast< std::chrono::microseconds >( duration ); \
+      /* duration -= microseconds; */ \
+      /* auto nanoseconds = std::chrono::duration_cast< std::chrono::nanoseconds >( duration ); */ \
+      time_t theTime = time(NULL); \
+      /* https://www.tutorialspoint.com/c_standard_library/c_function_localtime.htm */ \
+      struct tm* aTime = localtime(&theTime); \
+      std::cerr << secure_tinyformat( "%04d/%02d/%02d %02d:%02d:%02d:%03d.%03d %.3e ", /* %.3e */ \
+          aTime->tm_year + 1900, aTime->tm_mon + 1, aTime->tm_mday, \
+          aTime->tm_hour, minutes.count(), seconds.count(), milliseconds.count(), microseconds.count(), /* nanoseconds.count(), */ \
+          std::chrono::duration<double, std::milli>(chrono_clock_now-_debugger_current_saved_chrono_time).count() \
+          /* (1000.0 * (ctime_clock_now - _debugger_current_saved_c_time)) / CLOCKS_PER_SEC */ \
+      ); \
+      /* _debugger_current_saved_c_time = ctime_clock_now; */ \
+      _debugger_current_saved_chrono_time = chrono_clock_now;
 
-  #define DEBUGGER_TIME_HEADER \
-    time_t theTime = time(NULL); \
-    /* https://www.tutorialspoint.com/c_standard_library/c_function_localtime.htm */ \
-    struct tm* aTime = localtime(&theTime); \
-    gettimeofday(&TINYFORMAT_FORMATTER_timevalEnd, NULL); \
-    TINYFORMAT_FORMATTER_timeval_subtract(&TINYFORMAT_FORMATTER_timevalDiff, &TINYFORMAT_FORMATTER_timevalEnd, &TINYFORMAT_FORMATTER_timevalBegin); \
-    std::cerr << secure_tinyformat( "%04d/%02d/%02d %02d:%02d:%02d.%06i %ld.%06ld ", \
-        aTime->tm_year + 1900, aTime->tm_mon + 1, aTime->tm_mday, \
-        aTime->tm_hour, aTime->tm_min, aTime->tm_sec, TINYFORMAT_FORMATTER_timevalEnd.tv_usec, \
-        TINYFORMAT_FORMATTER_timevalDiff.tv_sec, TINYFORMAT_FORMATTER_timevalDiff.tv_usec \
-    ); \
-    gettimeofday(&TINYFORMAT_FORMATTER_timevalBegin, NULL);
+    // https://stackoverflow.com/questions/1706346/file-macro-manipulation-handling-at-compile-time/
+    constexpr const char * const TINYFORMAT_FORMATTER_debugger_strend(const char * const str) {
+        return *str ? TINYFORMAT_FORMATTER_debugger_strend(str + 1) : str;
+    }
+
+    constexpr const char * const TINYFORMAT_FORMATTER_debugger_fromlastslash(const char * const start, const char * const end) {
+        return (end >= start && *end != '/' && *end != '\\') ? TINYFORMAT_FORMATTER_debugger_fromlastslash(start, end - 1) : (end + 1);
+    }
+
+    constexpr const char * const TINYFORMAT_FORMATTER_debugger_pathlast(const char * const path) {
+        return TINYFORMAT_FORMATTER_debugger_fromlastslash(path, TINYFORMAT_FORMATTER_debugger_strend(path));
+    }
+
+    #define DEBUGGER_PATH_HEADER \
+      std::cerr << secure_tinyformat( "%s|%s:%s ", \
+          TINYFORMAT_FORMATTER_debugger_pathlast( __FILE__ ), __FUNCTION__, __LINE__ );
+
+  #else
+    #include <sys/time.h>
+
+    extern struct timeval TINYFORMAT_FORMATTER_timevalBegin;
+    extern struct timeval TINYFORMAT_FORMATTER_timevalEnd;
+    extern struct timeval TINYFORMAT_FORMATTER_timevalDiff;
+
+    // Initialize the variable on system start up
+    inline timeval TINYFORMAT_FORMATTER_gettimeofday(struct timeval *result) {
+      gettimeofday(result, NULL);
+      return *result;
+    }
+
+    #define TINYFORMAT_FORMATTER_timersub(a, b, result) \
+      do { \
+        (result)->tv_sec = (a)->tv_sec - (b)->tv_sec; \
+        (result)->tv_usec = (a)->tv_usec - (b)->tv_usec; \
+        if ((result)->tv_usec < 0) { \
+          --(result)->tv_sec; \
+          (result)->tv_usec += 1000000; \
+        } \
+      } while (0)
+
+    #define DEBUGGER_TIME_HEADER \
+      time_t theTime = time(NULL); \
+      /* https://www.tutorialspoint.com/c_standard_library/c_function_localtime.htm */ \
+      struct tm* aTime = localtime( &theTime ); \
+      gettimeofday( &TINYFORMAT_FORMATTER_timevalEnd, NULL ); \
+      TINYFORMAT_FORMATTER_timersub( &TINYFORMAT_FORMATTER_timevalEnd, &TINYFORMAT_FORMATTER_timevalBegin, &TINYFORMAT_FORMATTER_timevalDiff ); \
+      std::cerr << secure_tinyformat( "%04d/%02d/%02d %02d:%02d:%02d.%06i %ld.%06ld ", \
+          aTime->tm_year + 1900, aTime->tm_mon + 1, aTime->tm_mday, \
+          aTime->tm_hour, aTime->tm_min, aTime->tm_sec, TINYFORMAT_FORMATTER_timevalEnd.tv_usec, \
+          TINYFORMAT_FORMATTER_timevalDiff.tv_sec, TINYFORMAT_FORMATTER_timevalDiff.tv_usec \
+      ); \
+      gettimeofday(&TINYFORMAT_FORMATTER_timevalBegin, NULL);
+
+    // https://stackoverflow.com/questions/1706346/file-macro-manipulation-handling-at-compile-time/
+    inline const char * const TINYFORMAT_FORMATTER_debugger_strend(const char * const str) {
+      return *str ? TINYFORMAT_FORMATTER_debugger_strend( str + 1 ) : str;
+    }
+
+    inline const char * const TINYFORMAT_FORMATTER_debugger_fromlastslash(const char * const start, const char * const end) {
+      return ( end >= start && *end != '/' && *end != '\\' ) ? TINYFORMAT_FORMATTER_debugger_fromlastslash( start, end - 1 ) : ( end + 1 );
+    }
+
+    inline const char * const TINYFORMAT_FORMATTER_debugger_pathlast(const char * const path) {
+      return TINYFORMAT_FORMATTER_debugger_fromlastslash( path, TINYFORMAT_FORMATTER_debugger_strend( path ) );
+    }
+
+    #define DEBUGGER_PATH_HEADER \
+      std::cerr << secure_tinyformat( "%s|%s:%s ", \
+          TINYFORMAT_FORMATTER_debugger_pathlast( __FILE__ ) , __FUNCTION__, __LINE__ );
+  #endif
 
   #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_WITHOUT_TIME_STAMP
     #define _TINYFORMAT_FORMATTER_DEBUGGER_TIME_STAMP_HEADER(level)
@@ -165,23 +264,6 @@ TINYFORMAT_FOREACH_ARGNUM(TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT)
         DEBUGGER_TIME_HEADER \
       }
   #endif
-
-  // https://stackoverflow.com/questions/1706346/file-macro-manipulation-handling-at-compile-time/
-  inline const char * const TINYFORMAT_FORMATTER_debugger_strend(const char * const str) {
-    return *str ? TINYFORMAT_FORMATTER_debugger_strend( str + 1 ) : str;
-  }
-
-  inline const char * const TINYFORMAT_FORMATTER_debugger_fromlastslash(const char * const start, const char * const end) {
-    return ( end >= start && *end != '/' && *end != '\\' ) ? TINYFORMAT_FORMATTER_debugger_fromlastslash( start, end - 1 ) : ( end + 1 );
-  }
-
-  inline const char * const TINYFORMAT_FORMATTER_debugger_pathlast(const char * const path) {
-    return TINYFORMAT_FORMATTER_debugger_fromlastslash( path, TINYFORMAT_FORMATTER_debugger_strend( path ) );
-  }
-
-  #define DEBUGGER_PATH_HEADER \
-    std::cerr << secure_tinyformat( "%s|%s:%s ", \
-        TINYFORMAT_FORMATTER_debugger_pathlast( __FILE__ ) , __FUNCTION__, __LINE__ );
 
   #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_WITHOUT_PATHHEADER
     #define _TINYFORMAT_FORMATTER_DEBUGGER_TIME_FILE_PATH_HEADER(level)
@@ -317,5 +399,3 @@ TINYFORMAT_FOREACH_ARGNUM(TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT)
 
 
 #endif // TINYFORMAT_FORMATTER_DEBUGGER_APP_H
-
-

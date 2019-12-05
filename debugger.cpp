@@ -2,9 +2,9 @@
 *
 *   Copyright 2019 @ Evandro Coan, https://github.com/evandrocoan
 *
-*   Tinyformat Formatter Debugger C++ 98 Version: 1.0.0
+*   Tinyformat Formatter Debugger C++ 11 Version: 1.0.0
 *   Always ensure you are using the latest version by checking:
-*   https://gist.github.com/evandrocoan/a3d13a0e7c852fd079189330201c88d7
+*   https://gist.github.com/evandrocoan/2a5c60b230c90dfe1393b632c5bc83b2
 *
 *  This program is free software; you can redistribute it and/or modify it
 *  under the terms of the GNU Lesser General Public License as published by the
@@ -23,20 +23,27 @@
 */
 
 
-#include "debugger.h"
+#include "debugger.hpp"
 
 #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL > TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_DISABLED_DEBUG \
-    && !(TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_WITHOUT_TIME_STAMP)
-  struct timeval TINYFORMAT_FORMATTER_timevalBegin = TINYFORMAT_FORMATTER_gettimeofday(&TINYFORMAT_FORMATTER_timevalBegin);
-  struct timeval TINYFORMAT_FORMATTER_timevalEnd;
-  struct timeval TINYFORMAT_FORMATTER_timevalDiff;
+      && !(TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_WITHOUT_TIME_STAMP)
+
+  #if defined(TINYFORMAT_USE_VARIADIC_TEMPLATES)
+    std::clock_t _debugger_current_saved_c_time = std::clock();
+    std::chrono::time_point<std::chrono::high_resolution_clock> _debugger_current_saved_chrono_time = std::chrono::high_resolution_clock::now();
+  #else
+    struct timeval TINYFORMAT_FORMATTER_timevalBegin = TINYFORMAT_FORMATTER_gettimeofday(&TINYFORMAT_FORMATTER_timevalBegin);
+    struct timeval TINYFORMAT_FORMATTER_timevalEnd;
+    struct timeval TINYFORMAT_FORMATTER_timevalDiff;
+  #endif
+
 #endif
+
 
 // https://forums.alliedmods.net/showthread.php?t=277682#Cpp  --  [TUT] How to use an efficient debug system
 // https://stackoverflow.com/questions/1433204/how-do-i-use-extern-to-share-variables-between-source-files
 #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_PUT_STDERR_TO_FILE
 
-  // http://www.cplusplus.com/reference/cstdio/freopen/
   FileDebugSingleton::FileDebugSingleton()
   {
     FileDebugSingleton::isstarted = true;
@@ -44,7 +51,7 @@
   }
 
   FileDebugSingleton::~FileDebugSingleton() {
-    fclose( stderr );
+    fclose( stdout );
   }
 
   FileDebugSingleton* FileDebugSingleton::getInstance() {
@@ -60,4 +67,3 @@
   bool FileDebugSingleton::isstarted = false;
   FileDebugSingleton* FileDebugSingleton::instance = FileDebugSingleton::getInstance();
 #endif
-
