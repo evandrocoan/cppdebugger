@@ -35,9 +35,8 @@
 // https://en.cppreference.com/w/cpp/error/runtime_error
 #include <stdexcept>
 
-// C like printf support on C++
-// https://github.com/c42f/tinyformat
-// https://github.com/bitcoin/bitcoin/issues/9423
+// https://github.com/c42f/tinyformat  --  C like printf support on C++
+// https://github.com/bitcoin/bitcoin/issues/9423  --  tinyformat: Too many conversion specifiers in format string
 #define TINYFORMAT_ERROR(reasonString) throw std::runtime_error(reasonString)
 #include "tinyformat.h"
 
@@ -129,7 +128,7 @@
 /**
  * Control all program debugging.
  */
-#if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL > TINYFORMAT_FORMATTER_DEBUG_LEVEL_DISABLED_DEBUG
+#if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL > TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_DISABLED_DEBUG
   #include <iostream>
 
   #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_PUT_STDERR_TO_FILE
