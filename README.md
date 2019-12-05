@@ -1,3 +1,5 @@
+See a C++ 11 version of this here: https://gist.github.com/evandrocoan/2a5c60b230c90dfe1393b632c5bc83b2
+
 You need to first download the https://github.com/c42f/tinyformat/blob/master/tinyformat.h header and put it together with `debugger.h`.
 
 This was first publised on https://github.com/evandrocoan/InteractiveGraphicSystem/blob/master/src/debugger.h
