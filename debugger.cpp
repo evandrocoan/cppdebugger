@@ -46,6 +46,7 @@
 
   FileDebugSingleton::FileDebugSingleton()
   {
+    // http://www.cplusplus.com/reference/cstdio/freopen/
     FileDebugSingleton::isstarted = true;
     freopen( TINYFORMAT_FORMATTER_STDERR_DEBUG_FILEPATH, "a", stderr );
   }
