@@ -4,7 +4,7 @@
 *
 *   Tinyformat Formatter Debugger Version: 1.0.0
 *   Always ensure you are using the latest version by checking:
-*   https://gist.github.com/evandrocoan/ecc2f48c0f46391d4c1cc4a0709c847c
+*   https://gist.github.com/evandrocoan/a3d13a0e7c852fd079189330201c88d7
 *
 *  This program is free software; you can redistribute it and/or modify it
 *  under the terms of the GNU Lesser General Public License as published by the
