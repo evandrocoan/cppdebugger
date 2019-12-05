@@ -27,6 +27,9 @@
 #ifndef TINYFORMAT_FORMATTER_DEBUGGER_APP_H
 #define TINYFORMAT_FORMATTER_DEBUGGER_APP_H
 
+#define TINYFORMAT_FORMATTER_STDERR_DEBUG_FILEPATH "/var/log/stderr.log"
+
+
 // https://en.cppreference.com/w/cpp/error/runtime_error
 #include <stdexcept>
 
@@ -95,10 +98,6 @@ TINYFORMAT_FOREACH_ARGNUM(TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT)
   #define TINYFORMAT_FORMATTER_DEBUGGER_LEVEL 0
 #endif
 
-#if !defined(TINYFORMAT_FORMATTER_STDERR_DEBUG_FILEPATH)
-  #define TINYFORMAT_FORMATTER_STDERR_DEBUG_FILEPATH "stderr.log"
-#endif
-
 #define TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_DISABLED_DEBUG     0
 #define TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_WITHOUT_TIME_STAMP 1024
 #define TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_WITHOUT_PATHHEADER 2048
@@ -124,12 +123,6 @@ TINYFORMAT_FOREACH_ARGNUM(TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT)
     public:
       ~FileDebugSingleton();
       static FileDebugSingleton* getInstance();
-
-      // Force to use the correc value of `TINYFORMAT_FORMATTER_STDERR_DEBUG_FILEPATH` defined when
-      // this header was included for the first time.
-      static const char* getFile() {
-        return TINYFORMAT_FORMATTER_STDERR_DEBUG_FILEPATH;
-      }
     };
   #endif
 

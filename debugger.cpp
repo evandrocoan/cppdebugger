@@ -40,7 +40,7 @@
   FileDebugSingleton::FileDebugSingleton()
   {
     FileDebugSingleton::isstarted = true;
-    freopen( FileDebugSingleton::getFile(), "a", stderr );
+    freopen( TINYFORMAT_FORMATTER_STDERR_DEBUG_FILEPATH, "a", stderr );
   }
 
   FileDebugSingleton::~FileDebugSingleton() {
