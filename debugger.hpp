@@ -84,7 +84,8 @@ TINYFORMAT_FOREACH_ARGNUM(TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT)
  *  4     - Comment messages inside functions calls
  *  8     - High called functions, i.e., create very big massive text output
  *  1024  - Disable debugging with time stamp.
- *  2048  - Direct all `stderr` messages to a file.
+ *  2048  - Disable debugging with file path.
+ *  4096  - Direct all `stderr` messages to a file.
  */
 #if TINYFORMAT_FORMATTER_DEBUGGER_EXPAND(TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) == 1
   #undef TINYFORMAT_FORMATTER_DEBUGGER_LEVEL
