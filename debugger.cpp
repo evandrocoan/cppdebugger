@@ -52,7 +52,7 @@
   }
 
   FileDebugSingleton::~FileDebugSingleton() {
-    fclose( stdout );
+    fclose( stderr );
   }
 
   FileDebugSingleton* FileDebugSingleton::getInstance() {
