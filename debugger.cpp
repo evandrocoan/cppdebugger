@@ -4,7 +4,7 @@
 *
 *   Tinyformat Formatter Debugger C++ Version: 1.0.0
 *   Always ensure you are using the latest version by checking:
-*   https://gist.github.com/evandrocoan/2a5c60b230c90dfe1393b632c5bc83b2
+*   https://gist.github.com/evandrocoan/a3d13a0e7c852fd079189330201c88d7
 *
 *  This program is free software; you can redistribute it and/or modify it
 *  under the terms of the GNU Lesser General Public License as published by the
