@@ -27,13 +27,14 @@
 #ifndef TINYFORMAT_FORMATTER_DEBUGGER_APP_H
 #define TINYFORMAT_FORMATTER_DEBUGGER_APP_H
 
-// Uncomment this `TINYFORMAT_NO_VARIADIC_TEMPLATES` to force using C++ 98 Standard
-// #define TINYFORMAT_NO_VARIADIC_TEMPLATES
-#define TINYFORMAT_FORMATTER_STDERR_DEBUG_FILEPATH "stderr.log"
 
+#define TINYFORMAT_FORMATTER_STDERR_DEBUG_FILEPATH "/var/log/khomp/commons_stderr.log"
 
 // https://en.cppreference.com/w/cpp/error/runtime_error
 #include <stdexcept>
+
+// Uncomment this `TINYFORMAT_NO_VARIADIC_TEMPLATES` to force using C++ 98 Standard
+// #define TINYFORMAT_NO_VARIADIC_TEMPLATES
 
 // https://github.com/c42f/tinyformat  --  C like printf support on C++
 // https://github.com/bitcoin/bitcoin/issues/9423  --  tinyformat: Too many conversion specifiers in format string
