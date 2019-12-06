@@ -2,7 +2,7 @@ You need to first download the https://github.com/c42f/tinyformat/blob/master/ti
 
 This was first publised on https://github.com/evandrocoan/InteractiveGraphicSystem/blob/master/src/debugger.h
 
-To use this, just build the `debugger.hpp` and `debugger.cpp` with `-DMY_CUSTOM_DEBUGGER_LEVEL=127+4096` and linking `debugger.cpp` with your project files, while including the `debugger.h` file headers where you would like to use it.
+To use this, just build the `debugger.hpp` and `debugger.cpp` with `-DTINYFORMAT_FORMATTER_DEBUGGER_LEVEL=127+4096` and linking `debugger.cpp` with your project files, while including the `debugger.h` file headers where you would like to use it.
 ```
 $ g++ -o main -g -ggdb debugger.cpp test_debugger.cpp -DTINYFORMAT_FORMATTER_DEBUGGER_LEVEL=127 && ./main
 $ g++ -o main -g -ggdb debugger.cpp test_debugger.cpp -DTINYFORMAT_FORMATTER_DEBUGGER_LEVEL=127 --std=c++98 && ./main
