@@ -29,8 +29,8 @@
       && !(TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_WITHOUT_TIME_STAMP)
 
   #if defined(TINYFORMAT_USE_VARIADIC_TEMPLATES)
-    std::clock_t _debugger_current_saved_c_time = std::clock();
-    std::chrono::time_point<std::chrono::high_resolution_clock> _debugger_current_saved_chrono_time = std::chrono::high_resolution_clock::now();
+    std::clock_t TINYFORMAT_FORMATTER_debugger_current_saved_c_time = std::clock();
+    std::chrono::time_point<std::chrono::high_resolution_clock> TINYFORMAT_FORMATTER_debugger_current_saved_chrono_time = std::chrono::high_resolution_clock::now();
   #else
     struct timeval TINYFORMAT_FORMATTER_timevalBegin = TINYFORMAT_FORMATTER_gettimeofday(&TINYFORMAT_FORMATTER_timevalBegin);
     struct timeval TINYFORMAT_FORMATTER_timevalEnd;

@@ -27,14 +27,14 @@
 #ifndef TINYFORMAT_FORMATTER_DEBUGGER_APP_H
 #define TINYFORMAT_FORMATTER_DEBUGGER_APP_H
 
+#define TINYFORMAT_FORMATTER_STDERR_DEBUG_FILEPATH "stderr.log"
 
-#define TINYFORMAT_FORMATTER_STDERR_DEBUG_FILEPATH "/var/log/khomp/commons_stderr.log"
 
 // https://en.cppreference.com/w/cpp/error/runtime_error
 #include <stdexcept>
 
 // Uncomment this `TINYFORMAT_NO_VARIADIC_TEMPLATES` to force using C++ 98 Standard
-// #define TINYFORMAT_NO_VARIADIC_TEMPLATES
+#define TINYFORMAT_NO_VARIADIC_TEMPLATES
 
 // https://github.com/c42f/tinyformat  --  C like printf support on C++
 // https://github.com/bitcoin/bitcoin/issues/9423  --  tinyformat: Too many conversion specifiers in format string
@@ -131,6 +131,7 @@
  */
 #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL > TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_DISABLED_DEBUG
   #include <iostream>
+  #include <cstdio>
 
   #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_PUT_STDERR_TO_FILE
     class FileDebugSingleton
@@ -152,8 +153,8 @@
 
     // http://en.cppreference.com/w/cpp/chrono/c/clock
     // https://stackoverflow.com/questions/12392278/measure-time-in-linux-time-vs-clock-vs-getrusage-vs-clock-gettime-vs-gettimeof
-    extern std::clock_t _debugger_current_saved_c_time;
-    extern std::chrono::time_point< std::chrono::high_resolution_clock > _debugger_current_saved_chrono_time;
+    extern std::clock_t TINYFORMAT_FORMATTER_debugger_current_saved_c_time;
+    extern std::chrono::time_point< std::chrono::high_resolution_clock > TINYFORMAT_FORMATTER_debugger_current_saved_chrono_time;
 
     #define DEBUGGER_TIME_HEADER \
       /* std::clock_t ctime_clock_now = std::clock(); */ \
@@ -173,17 +174,17 @@
       auto microseconds = std::chrono::duration_cast< std::chrono::microseconds >( duration ); \
       /* duration -= microseconds; */ \
       /* auto nanoseconds = std::chrono::duration_cast< std::chrono::nanoseconds >( duration ); */ \
-      time_t theTime = time(NULL); \
+      time_t theTime = time( NULL ); \
       /* https://www.tutorialspoint.com/c_standard_library/c_function_localtime.htm */ \
-      struct tm* aTime = localtime(&theTime); \
+      struct tm* aTime = localtime( &theTime ); \
       std::cerr << secure_tinyformat( "%04d/%02d/%02d %02d:%02d:%02d:%03d.%03d %.3e ", /* %.3e */ \
           aTime->tm_year + 1900, aTime->tm_mon + 1, aTime->tm_mday, \
           aTime->tm_hour, minutes.count(), seconds.count(), milliseconds.count(), microseconds.count(), /* nanoseconds.count(), */ \
-          std::chrono::duration<double, std::milli>(chrono_clock_now-_debugger_current_saved_chrono_time).count() \
-          /* (1000.0 * (ctime_clock_now - _debugger_current_saved_c_time)) / CLOCKS_PER_SEC */ \
+          std::chrono::duration<double, std::milli>( chrono_clock_now - TINYFORMAT_FORMATTER_debugger_current_saved_chrono_time ).count() \
+          /* ( 1000.0 * ( ctime_clock_now - TINYFORMAT_FORMATTER_debugger_current_saved_c_time ) ) / CLOCKS_PER_SEC */ \
       ); \
-      /* _debugger_current_saved_c_time = ctime_clock_now; */ \
-      _debugger_current_saved_chrono_time = chrono_clock_now;
+      /* TINYFORMAT_FORMATTER_debugger_current_saved_c_time = ctime_clock_now; */ \
+      TINYFORMAT_FORMATTER_debugger_current_saved_chrono_time = chrono_clock_now;
 
     // https://stackoverflow.com/questions/1706346/file-macro-manipulation-handling-at-compile-time/
     constexpr const char * const TINYFORMAT_FORMATTER_debugger_strend(const char * const str) {
@@ -211,7 +212,7 @@
 
     // Initialize the variable on system start up
     inline timeval TINYFORMAT_FORMATTER_gettimeofday(struct timeval *result) {
-      gettimeofday(result, NULL);
+      gettimeofday( result, NULL );
       return *result;
     }
 
@@ -226,7 +227,7 @@
       } while (0)
 
     #define DEBUGGER_TIME_HEADER \
-      time_t theTime = time(NULL); \
+      time_t theTime = time( NULL ); \
       /* https://www.tutorialspoint.com/c_standard_library/c_function_localtime.htm */ \
       struct tm* aTime = localtime( &theTime ); \
       gettimeofday( &TINYFORMAT_FORMATTER_timevalEnd, NULL ); \
@@ -236,7 +237,7 @@
           aTime->tm_hour, aTime->tm_min, aTime->tm_sec, TINYFORMAT_FORMATTER_timevalEnd.tv_usec, \
           TINYFORMAT_FORMATTER_timevalDiff.tv_sec, TINYFORMAT_FORMATTER_timevalDiff.tv_usec \
       ); \
-      gettimeofday(&TINYFORMAT_FORMATTER_timevalBegin, NULL);
+      gettimeofday( &TINYFORMAT_FORMATTER_timevalBegin, NULL );
 
     // https://stackoverflow.com/questions/1706346/file-macro-manipulation-handling-at-compile-time/
     inline const char * const TINYFORMAT_FORMATTER_debugger_strend(const char * const str) {
@@ -260,7 +261,7 @@
     #define _TINYFORMAT_FORMATTER_DEBUGGER_TIME_STAMP_HEADER(level)
   #else
     #define _TINYFORMAT_FORMATTER_DEBUGGER_TIME_STAMP_HEADER(level) \
-      if( !((level) & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_WITHOUT_TIME_STAMP) ) { \
+      if( !( (level) & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_WITHOUT_TIME_STAMP ) ) { \
         DEBUGGER_TIME_HEADER \
       }
   #endif
@@ -269,7 +270,7 @@
     #define _TINYFORMAT_FORMATTER_DEBUGGER_TIME_FILE_PATH_HEADER(level)
   #else
     #define _TINYFORMAT_FORMATTER_DEBUGGER_TIME_FILE_PATH_HEADER(level) \
-      if( !((level) & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_WITHOUT_PATHHEADER) ) { \
+      if( !( (level) & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_WITHOUT_PATHHEADER ) ) { \
         DEBUGGER_PATH_HEADER \
       }
   #endif
