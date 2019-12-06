@@ -59,7 +59,7 @@ There is not need to specify any other format specifier other than "%s", unless 
 
 By default, this logging system will be disabled and no changes are required by any project using this include.
 
-When enabled, it will create a file on `stderr.log`. The file `mylogger_stderr.txt` will contain all messaged outputted to the `stderr` stream, i.e., both `std::cerr << "My message" << std::endl;` or `LOG(1, "My message");` are going to be in that file.
+When enabled, it will create a file on `stderr.log`. The file `stderr.log` will contain all messaged outputted to the `stderr` stream, i.e., both `std::cerr << "My message" << std::endl;` or `LOG(1, "My message");` are going to be in that file.
 
 It uses the http://www.cplusplus.com/reference/cstdio/freopen/ function from `<cstdio>` and it works with legacy `C++ 98` code.
 
