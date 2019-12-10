@@ -4,7 +4,7 @@
 *
 *   Tinyformat Formatter Debugger C++ 98 and 11 Header Version: 1.0.0
 *   Always ensure you are using the latest version by checking:
-*   https://gist.github.com/evandrocoan/a3d13a0e7c852fd079189330201c88d7
+*   https://github.com/evandrocoan/cppdebugger
 *
 *  This program is free software; you can redistribute it and/or modify it
 *  under the terms of the GNU Lesser General Public License as published by the
