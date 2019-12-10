@@ -40,6 +40,15 @@
 #endif
 
 
+#if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_STDERR_OUTPUT_LOCK
+  #if defined(TINYFORMAT_USE_VARIADIC_TEMPLATES)
+    std::mutex TINYFORMAT_FORMATTER_stderrlockoutput;
+  #else
+    SimpleLock TINYFORMAT_FORMATTER_stderrlockoutput;
+  #endif
+#endif
+
+
 // https://forums.alliedmods.net/showthread.php?t=277682#Cpp  --  [TUT] How to use an efficient debug system
 // https://stackoverflow.com/questions/1433204/how-do-i-use-extern-to-share-variables-between-source-files
 #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_PUT_STDERR_TO_FILE

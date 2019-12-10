@@ -110,6 +110,7 @@
  *  1024  - Disable debugging with time stamp.
  *  2048  - Disable debugging with file path.
  *  4096  - Direct all `stderr` messages to a file.
+ *  8192  - Put a lock around the `stderr` messages for multithreading synchronization.
  */
 #if TINYFORMAT_FORMATTER_DEBUGGER_EXPAND(TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) == 1
   #undef TINYFORMAT_FORMATTER_DEBUGGER_LEVEL
@@ -123,6 +124,7 @@
 #define TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_WITHOUT_TIME_STAMP 1024
 #define TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_WITHOUT_PATHHEADER 2048
 #define TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_PUT_STDERR_TO_FILE 4096
+#define TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_STDERR_OUTPUT_LOCK 8192
 
 
 
@@ -132,6 +134,31 @@
 #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL > TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_DISABLED_DEBUG
   #include <iostream>
   #include <cstdio>
+
+  #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_STDERR_OUTPUT_LOCK
+
+    #if defined(TINYFORMAT_USE_VARIADIC_TEMPLATES)
+      #include <mutex>
+      extern std::mutex TINYFORMAT_FORMATTER_stderrlockoutput;
+    #else
+      #include <base/simple_lock.hpp>
+      extern SimpleLock TINYFORMAT_FORMATTER_stderrlockoutput;
+    #endif
+
+    #define TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
+      try { \
+      TINYFORMAT_FORMATTER_stderrlockoutput.lock();
+
+    #define TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
+      TINYFORMAT_FORMATTER_stderrlockoutput.unlock(); \
+      } \
+      catch (...) { \
+        std::cerr << secure_tinyformat( "Error: Unknown exception when locking the stderr output!" ) << std::flush; \
+      }
+  #else
+    #define TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK
+    #define TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK
+  #endif
 
   #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_PUT_STDERR_TO_FILE
     class TINYFORMAT_FORMATTER_FileDebugger
@@ -289,12 +316,14 @@
   #define LOG(level, ...) \
   do \
   { \
+    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
       _TINYFORMAT_FORMATTER_DEBUGGER_TIME_STAMP_HEADER( level ) \
       _TINYFORMAT_FORMATTER_DEBUGGER_TIME_FILE_PATH_HEADER( level ) \
       std::cerr << secure_tinyformat( __VA_ARGS__ ) << std::endl; \
     } \
+    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
   } \
   while( 0 )
 
@@ -304,12 +333,14 @@
   #define LOGLN(level, ...) \
   do \
   { \
+    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
       _TINYFORMAT_FORMATTER_DEBUGGER_TIME_STAMP_HEADER( level ) \
       _TINYFORMAT_FORMATTER_DEBUGGER_TIME_FILE_PATH_HEADER( level ) \
       std::cerr << secure_tinyformat( __VA_ARGS__ ); \
     } \
+    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
   } \
   while( 0 )
 
@@ -319,10 +350,12 @@
   #define LOGLC(level, ...) \
   do \
   { \
+    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
       std::cerr << secure_tinyformat( __VA_ARGS__ ) << std::flush; \
     } \
+    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
   } \
   while( 0 )
 
@@ -332,10 +365,12 @@
   #define LOGCD(level, code) \
   do \
   { \
+    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
       code; \
     } \
+    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
   } \
   while( 0 )
 
@@ -345,10 +380,12 @@
   #define PRINT(level, ...) \
   do \
   { \
+    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
       std::cerr << secure_tinyformat( __VA_ARGS__ ) << std::endl; \
     } \
+    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
   } \
   while( 0 )
 
@@ -358,10 +395,12 @@
   #define PRINTLN(level, ...) \
   do \
   { \
+    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
       std::cerr << secure_tinyformat( __VA_ARGS__ ) << std::flush; \
     } \
+    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
   } \
   while( 0 )
 
