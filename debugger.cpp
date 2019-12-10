@@ -44,27 +44,27 @@
 // https://stackoverflow.com/questions/1433204/how-do-i-use-extern-to-share-variables-between-source-files
 #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_PUT_STDERR_TO_FILE
 
-  FileDebugSingleton::FileDebugSingleton()
+  TINYFORMAT_FORMATTER_FileDebugger::TINYFORMAT_FORMATTER_FileDebugger()
   {
     // http://www.cplusplus.com/reference/cstdio/freopen/
-    FileDebugSingleton::isstarted = true;
+    TINYFORMAT_FORMATTER_FileDebugger::isstarted = true;
     freopen( TINYFORMAT_FORMATTER_STDERR_DEBUG_FILEPATH, "a", stderr );
   }
 
-  FileDebugSingleton::~FileDebugSingleton() {
+  TINYFORMAT_FORMATTER_FileDebugger::~TINYFORMAT_FORMATTER_FileDebugger() {
     fclose( stderr );
   }
 
-  FileDebugSingleton* FileDebugSingleton::getInstance() {
-    if( FileDebugSingleton::isstarted ) {
-      return FileDebugSingleton::instance;
+  TINYFORMAT_FORMATTER_FileDebugger* TINYFORMAT_FORMATTER_FileDebugger::getInstance() {
+    if( TINYFORMAT_FORMATTER_FileDebugger::isstarted ) {
+      return TINYFORMAT_FORMATTER_FileDebugger::instance;
     }
 
-    FileDebugSingleton::instance = new FileDebugSingleton();
-    FileDebugSingleton::isstarted = true;
-    return FileDebugSingleton::instance;
+    TINYFORMAT_FORMATTER_FileDebugger::instance = new TINYFORMAT_FORMATTER_FileDebugger();
+    TINYFORMAT_FORMATTER_FileDebugger::isstarted = true;
+    return TINYFORMAT_FORMATTER_FileDebugger::instance;
   }
 
-  bool FileDebugSingleton::isstarted = false;
-  FileDebugSingleton* FileDebugSingleton::instance = FileDebugSingleton::getInstance();
+  bool TINYFORMAT_FORMATTER_FileDebugger::isstarted = false;
+  TINYFORMAT_FORMATTER_FileDebugger* TINYFORMAT_FORMATTER_FileDebugger::instance = TINYFORMAT_FORMATTER_FileDebugger::getInstance();
 #endif

@@ -134,16 +134,16 @@
   #include <cstdio>
 
   #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_PUT_STDERR_TO_FILE
-    class FileDebugSingleton
+    class TINYFORMAT_FORMATTER_FileDebugger
     {
       static bool isstarted;
-      static FileDebugSingleton* instance;
+      static TINYFORMAT_FORMATTER_FileDebugger* instance;
 
-      FileDebugSingleton();
+      TINYFORMAT_FORMATTER_FileDebugger();
 
     public:
-      ~FileDebugSingleton();
-      static FileDebugSingleton* getInstance();
+      ~TINYFORMAT_FORMATTER_FileDebugger();
+      static TINYFORMAT_FORMATTER_FileDebugger* getInstance();
     };
   #endif
 
