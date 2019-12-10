@@ -9,34 +9,7 @@ $ g++ -o main -g -ggdb debugger.cpp test_debugger.cpp -DTINYFORMAT_FORMATTER_DEB
 $ g++ -o main -g -ggdb debugger.cpp test_debugger.cpp -DTINYFORMAT_FORMATTER_DEBUGGER_LEVEL=127 --std=c++11 && ./main
 ```
 
-**test_debugger.cpp**
-```c++
-#include "debugger.hpp"
-#include <stdio.h>
-
-int main(int argc, char const *argv[])
-{
-    fprintf( stderr, "First test\n" );
-    LOG( 1, "Hi" );
-    LOG( 1, "Hi %s", 1 );
-    LOG( 1, "Hi %s" );
-    LOG( 1, "Hi %s %s", 1 );
-
-    fprintf( stderr, "Second test\n" );
-    LOG( 1+1024, "Hi" );
-    LOG( 1+1024, "Hi %s", 1 );
-    LOG( 1+1024, "Hi %s" );
-    LOG( 1+1024, "Hi %s %s", 1 );
-
-    fprintf( stderr, "Third test\n" );
-    LOG( 1+2048, "Hi" );
-    LOG( 1+2048, "Hi %s", 1 );
-    LOG( 1+2048, "Hi %s" );
-    LOG( 1+2048, "Hi %s %s", 1 );
-}
-```
-
-**Output result**
+**test_debugger.cpp** Output result:
 ```
 First test
 2019/12/05 15:33:43.447807 0.000096 test_debugger.cpp|main:7 Hi

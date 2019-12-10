@@ -2,7 +2,7 @@
 *
 *   Copyright 2019 @ Evandro Coan, https://github.com/evandrocoan
 *
-*   Tinyformat Formatter Debugger C++ Version: 1.0.0
+*   Tinyformat Formatter Debugger C++ 98 and 11 Cpp Version: 1.0.0
 *   Always ensure you are using the latest version by checking:
 *   https://gist.github.com/evandrocoan/a3d13a0e7c852fd079189330201c88d7
 *
