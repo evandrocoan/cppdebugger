@@ -139,10 +139,10 @@
       static bool isstarted;
       static TINYFORMAT_FORMATTER_FileDebugger* instance;
 
-      TINYFORMAT_FORMATTER_FileDebugger();
-
     public:
+      TINYFORMAT_FORMATTER_FileDebugger();
       ~TINYFORMAT_FORMATTER_FileDebugger();
+
       static TINYFORMAT_FORMATTER_FileDebugger* getInstance();
     };
   #endif

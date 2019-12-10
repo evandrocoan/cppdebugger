@@ -44,15 +44,28 @@
 // https://stackoverflow.com/questions/1433204/how-do-i-use-extern-to-share-variables-between-source-files
 #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_PUT_STDERR_TO_FILE
 
-  TINYFORMAT_FORMATTER_FileDebugger::TINYFORMAT_FORMATTER_FileDebugger()
-  {
+  TINYFORMAT_FORMATTER_FileDebugger::TINYFORMAT_FORMATTER_FileDebugger() {
+
     // http://www.cplusplus.com/reference/cstdio/freopen/
-    TINYFORMAT_FORMATTER_FileDebugger::isstarted = true;
-    freopen( TINYFORMAT_FORMATTER_STDERR_DEBUG_FILEPATH, "a", stderr );
+    if( TINYFORMAT_FORMATTER_FileDebugger::isstarted ) {
+      std::cerr << "Error: freopen(stderr) is already open!" << std::endl;
+    }
+    else {
+      TINYFORMAT_FORMATTER_FileDebugger::isstarted = true;
+      freopen( TINYFORMAT_FORMATTER_STDERR_DEBUG_FILEPATH, "a", stderr );
+    }
   }
 
   TINYFORMAT_FORMATTER_FileDebugger::~TINYFORMAT_FORMATTER_FileDebugger() {
-    fclose( stderr );
+    TINYFORMAT_FORMATTER_FileDebugger::isstarted = false;
+
+    if( TINYFORMAT_FORMATTER_FileDebugger::isstarted ) {
+      fclose( stderr );
+      TINYFORMAT_FORMATTER_FileDebugger::instance = NULL;
+    }
+    else {
+      std::cerr << "Error: freopen(stderr) is already closed!" << std::endl;
+    }
   }
 
   TINYFORMAT_FORMATTER_FileDebugger* TINYFORMAT_FORMATTER_FileDebugger::getInstance() {
@@ -61,7 +74,6 @@
     }
 
     TINYFORMAT_FORMATTER_FileDebugger::instance = new TINYFORMAT_FORMATTER_FileDebugger();
-    TINYFORMAT_FORMATTER_FileDebugger::isstarted = true;
     return TINYFORMAT_FORMATTER_FileDebugger::instance;
   }
 
