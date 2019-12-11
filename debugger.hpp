@@ -53,7 +53,7 @@
       return std::string( error.what() ) + std::string( ": " ) + std::string( formattings );
     }
     catch (...) {
-      return std::string( "Unknown error on the formating string: " ) + std::string( formattings );
+      return std::string( "Unknown error on the formatting string: " ) + std::string( formattings );
     }
   }
 
@@ -69,7 +69,7 @@
       return std::string( error.what() ) + std::string( ": '" ) + std::string( formattings ) + std::string( "'" ); \
     } \
     catch (...) { \
-      return std::string( "Unknown error on the formating string: " ) + std::string( ": '" ) + std::string( formattings ) + std::string( "'" ); \
+      return std::string( "Unknown error on the formatting string: " ) + std::string( ": '" ) + std::string( formattings ) + std::string( "'" ); \
     } \
   }
 
@@ -83,7 +83,7 @@
       return std::string( error.what() ) + std::string( ": '" ) + std::string( formattings ) + std::string( "'" );
     }
     catch (...) {
-      return std::string( "Unknown error on the formating string: " ) + std::string( ": '" ) + std::string( formattings ) + std::string( "'" );
+      return std::string( "Unknown error on the formatting string: " ) + std::string( ": '" ) + std::string( formattings ) + std::string( "'" );
     }
   }
 
@@ -311,7 +311,7 @@
    * respectively.
    *
    * @param level     the debugging desired level to be printed.
-   * @param ...       variable number os formating arguments parameters.
+   * @param ...       variable number os formatting arguments parameters.
    */
   #define LOG(level, ...) \
   do \
