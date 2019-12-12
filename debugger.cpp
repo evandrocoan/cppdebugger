@@ -42,7 +42,7 @@
 
 #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_STDERR_OUTPUT_LOCK
   #if defined(TINYFORMAT_USE_VARIADIC_TEMPLATES)
-    std::mutex TINYFORMAT_FORMATTER_stderrlockoutput;
+    std::recursive_mutex TINYFORMAT_FORMATTER_stderrlockoutput;
   #else
     SimpleLock TINYFORMAT_FORMATTER_stderrlockoutput;
   #endif

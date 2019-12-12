@@ -139,7 +139,7 @@
 
     #if defined(TINYFORMAT_USE_VARIADIC_TEMPLATES)
       #include <mutex>
-      extern std::mutex TINYFORMAT_FORMATTER_stderrlockoutput;
+      extern std::recursive_mutex TINYFORMAT_FORMATTER_stderrlockoutput;
     #else
       #include <base/simple_lock.hpp>
       extern SimpleLock TINYFORMAT_FORMATTER_stderrlockoutput;
