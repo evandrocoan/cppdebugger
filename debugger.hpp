@@ -63,32 +63,19 @@
 
 #else
   // Create a nth "variadic" template, see `tinyformat.h` variables TINYFORMAT_ARGTYPES_1, 2, 3... etc
-  #define TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT(n) template<TINYFORMAT_ARGTYPES(n)> \
-  std::string secure_tinyformat(const char *formattings, TINYFORMAT_VARARGS(n)) \
+  #define TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT(n) \
+  template<TINYFORMAT_ARGTYPES(n)> \
+  inline std::string secure_tinyformat(TINYFORMAT_VARARGS(n)) \
   { \
     try { \
-      return tfm::format( formattings, TINYFORMAT_PASSARGS(n) ); \
+      return tfm::format( TINYFORMAT_PASSARGS(n) ); \
     } \
     catch (std::runtime_error &error) { \
-      return std::string( error.what() ) + std::string( ": '" ) + std::string( formattings ) + std::string( "'" ); \
+      return std::string( error.what() ) + std::string( ": '" ) + std::string( v1 ) + std::string( "'" ); \
     } \
     catch (...) { \
-      return std::string( "Unknown error on the formatting string: " ) + std::string( ": '" ) + std::string( formattings ) + std::string( "'" ); \
+      return std::string( "Unknown error on the formating string: " ) + std::string( ": '" ) + std::string( v1 ) + std::string( "'" ); \
     } \
-  }
-
-  // Define a basic "variadic" template case with 0 parameters
-  inline std::string secure_tinyformat(const char *formattings)
-  {
-    try {
-      return tfm::format( formattings );
-    }
-    catch (std::runtime_error &error) {
-      return std::string( error.what() ) + std::string( ": '" ) + std::string( formattings ) + std::string( "'" );
-    }
-    catch (...) {
-      return std::string( "Unknown error on the formatting string: " ) + std::string( ": '" ) + std::string( formattings ) + std::string( "'" );
-    }
   }
 
   // Create the "variadic" templates for C++ 98 from 1 up to the maximum defined on
