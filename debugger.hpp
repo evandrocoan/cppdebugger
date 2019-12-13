@@ -33,6 +33,10 @@
 // https://en.cppreference.com/w/cpp/error/runtime_error
 #include <stdexcept>
 
+// https://stackoverflow.com/questions/3781520/how-to-test-if-preprocessor-symbol-is-defined-but-has-no-value
+#define TINYFORMAT_FORMATTER_DEBUGGER_DO_EXPAND(value)  value ## 1
+#define TINYFORMAT_FORMATTER_DEBUGGER_EXPAND(value)     TINYFORMAT_FORMATTER_DEBUGGER_DO_EXPAND(value)
+
 // Uncomment this `TINYFORMAT_NO_VARIADIC_TEMPLATES` to force using C++ 98 Standard
 // #define TINYFORMAT_NO_VARIADIC_TEMPLATES
 
@@ -92,10 +96,6 @@
   TINYFORMAT_FOREACH_ARGNUM(TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT)
 #endif
 
-
-// https://stackoverflow.com/questions/3781520/how-to-test-if-preprocessor-symbol-is-defined-but-has-no-value
-#define TINYFORMAT_FORMATTER_DEBUGGER_DO_EXPAND(value)  value ## 1
-#define TINYFORMAT_FORMATTER_DEBUGGER_EXPAND(value)     TINYFORMAT_FORMATTER_DEBUGGER_DO_EXPAND(value)
 
 
 /**
