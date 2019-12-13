@@ -34,8 +34,8 @@
 #include <stdexcept>
 
 // https://stackoverflow.com/questions/3781520/how-to-test-if-preprocessor-symbol-is-defined-but-has-no-value
-#define TINYFORMAT_FORMATTER_DEBUGGER_DO_EXPAND(value)  value ## 1
-#define TINYFORMAT_FORMATTER_DEBUGGER_EXPAND(value)     TINYFORMAT_FORMATTER_DEBUGGER_DO_EXPAND(value)
+#define TINYFORMAT_FORMATTER_DEBUGGER_IS_MACRO_EMPTY_DO_EXPAND(value) value ## 1
+#define TINYFORMAT_FORMATTER_DEBUGGER_IS_MACRO_EMPTY(value) TINYFORMAT_FORMATTER_DEBUGGER_IS_MACRO_EMPTY_DO_EXPAND(value)
 
 // Uncomment this `TINYFORMAT_NO_VARIADIC_TEMPLATES` to force using C++ 98 Standard
 // #define TINYFORMAT_NO_VARIADIC_TEMPLATES
@@ -112,7 +112,7 @@
  *  4096  - Direct all `stderr` messages to a file.
  *  8192  - Put a lock around the `stderr` messages for multithreading synchronization.
  */
-#if TINYFORMAT_FORMATTER_DEBUGGER_EXPAND(TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) == 1
+#if TINYFORMAT_FORMATTER_DEBUGGER_IS_MACRO_EMPTY(TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) == 1
   #undef TINYFORMAT_FORMATTER_DEBUGGER_LEVEL
 #endif
 
