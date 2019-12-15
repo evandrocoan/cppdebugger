@@ -64,23 +64,24 @@
 #else
   // Create a nth "variadic" template, see `tinyformat.h` variables TINYFORMAT_ARGTYPES_1, 2, 3... etc
   #define TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT(n) \
-  template<TINYFORMAT_ARGTYPES(n)> \
-  inline std::string secure_tinyformat(TINYFORMAT_VARARGS(n)) \
+  template<class T0 TINYFORMAT_ARGTYPES(n,,,,)> \
+  inline std::string secure_tinyformat(const T0& v0 TINYFORMAT_VARARGS(n,,)) \
   { \
     try { \
-      return tfm::format( TINYFORMAT_PASSARGS(n) ); \
+      return tfm::format( v0 TINYFORMAT_PASSARGS(n,,) ); \
     } \
     catch (std::runtime_error &error) { \
-      return std::string( error.what() ) + std::string( ": '" ) + std::string( v1 ) + std::string( "'" ); \
+      return std::string( error.what() ) + std::string( ": '" ) + std::string( v0 ) + std::string( "'" ); \
     } \
     catch (...) { \
-      return std::string( "Unknown error on the formating string: " ) + std::string( ": '" ) + std::string( v1 ) + std::string( "'" ); \
+      return std::string( "Unknown error on the formating string: " ) + std::string( ": '" ) + std::string( v0 ) + std::string( "'" ); \
     } \
   }
 
   // Create the "variadic" templates for C++ 98 from 1 up to the maximum defined on
   // `tinyformat.h` variables TINYFORMAT_ARGTYPES_1, 2, 3... etc
   TINYFORMAT_FOREACH_ARGNUM(TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT)
+  #undef TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT
 #endif
 
 
