@@ -1,4 +1,4 @@
 /main
 /stderr.log
 *.sublime-workspace
-*.exe
+*.exe*
