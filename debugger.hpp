@@ -40,6 +40,9 @@
 // Uncomment this `TINYFORMAT_NO_VARIADIC_TEMPLATES` to force using C++ 98 Standard
 // #define TINYFORMAT_NO_VARIADIC_TEMPLATES
 
+#include <errno.h>
+#include <string.h>
+
 // https://github.com/c42f/tinyformat  --  C like printf support on C++
 // https://github.com/bitcoin/bitcoin/issues/9423  --  tinyformat: Too many conversion specifiers in format string
 #define TINYFORMAT_ERROR(reasonString) throw std::runtime_error(reasonString)

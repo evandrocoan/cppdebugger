@@ -61,7 +61,11 @@
     }
     else {
       TINYFORMAT_FORMATTER_FileDebugger::isstarted = true;
-      freopen( TINYFORMAT_FORMATTER_STDERR_DEBUG_FILEPATH, "a", stderr );
+      FILE* stream = freopen( TINYFORMAT_FORMATTER_STDERR_DEBUG_FILEPATH, "a", stderr );
+
+      if( stream == NULL ) {
+        std::cerr << "Error: freopen(stderr) could not be opend: " << strerror(errno) << "!" << std::endl;
+      }
     }
   }
 
