@@ -1,6 +1,6 @@
 You need to first download the https://github.com/c42f/tinyformat/blob/master/tinyformat.h header and put it together with `debugger.h`.
 
-This was first publised on https://github.com/evandrocoan/InteractiveGraphicSystem/blob/master/src/debugger.h
+This was first published on https://github.com/evandrocoan/InteractiveGraphicSystem/blob/master/src/debugger.h
 
 To use this, just build the `debugger.hpp` and `debugger.cpp` with `-DTINYFORMAT_FORMATTER_DEBUGGER_LEVEL=127+4096` and linking `debugger.cpp` with your project files, while including the `debugger.h` file headers where you would like to use it.
 ```
