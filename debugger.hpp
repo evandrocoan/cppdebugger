@@ -68,7 +68,7 @@
   inline std::string secure_tinyformat(const T0& v0 TINYFORMAT_VARARGS(n,,)) \
   { \
     try { \
-      return tfm::format( v0 TINYFORMAT_PASSARGS(n,,) ); \
+      return tfm::format( v0 TINYFORMAT_PASSARGS(n,,,,) ); \
     } \
     catch (std::runtime_error &error) { \
       return std::string( error.what() ) + std::string( ": '" ) + std::string( v0 ) + std::string( "'" ); \
