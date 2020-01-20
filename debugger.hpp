@@ -51,7 +51,7 @@
 #if defined(TINYFORMAT_USE_VARIADIC_TEMPLATES)
   // https://github.com/laanwj/bitcoin/blob/3b092bd9b6b3953d5c3052d57e4827dbd85941fd/src/util.h
   template<typename... Args>
-  std::string secure_tinyformat(const char *formattings, const Args&... arguments)
+  std::string secure_tinyformat(const char*formattings, const Args&... arguments)
   {
     try {
       return tfm::format( formattings, arguments... );
@@ -136,19 +136,19 @@
       extern SimpleLock TINYFORMAT_FORMATTER_stderrlockoutput;
     #endif
 
-    #define TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
+    #define _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
       try { \
       TINYFORMAT_FORMATTER_stderrlockoutput.lock();
 
-    #define TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
+    #define _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
       TINYFORMAT_FORMATTER_stderrlockoutput.unlock(); \
       } \
       catch (...) { \
         std::cerr << secure_tinyformat( "Error: Unknown exception when locking the stderr output!" ) << std::flush; \
       }
   #else
-    #define TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK
-    #define TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK
+    #define _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK
+    #define _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK
   #endif
 
   #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_PUT_STDERR_TO_FILE
@@ -205,15 +205,15 @@
       TINYFORMAT_FORMATTER_debugger_current_saved_chrono_time = chrono_clock_now;
 
     // https://stackoverflow.com/questions/1706346/file-macro-manipulation-handling-at-compile-time/
-    constexpr const char * const TINYFORMAT_FORMATTER_debugger_strend(const char * const str) {
+    constexpr const char* const TINYFORMAT_FORMATTER_debugger_strend(const char* const str) {
         return *str ? TINYFORMAT_FORMATTER_debugger_strend(str + 1) : str;
     }
 
-    constexpr const char * const TINYFORMAT_FORMATTER_debugger_fromlastslash(const char * const start, const char * const end) {
+    constexpr const char* const TINYFORMAT_FORMATTER_debugger_fromlastslash(const char* const start, const char* const end) {
         return (end >= start && *end != '/' && *end != '\\') ? TINYFORMAT_FORMATTER_debugger_fromlastslash(start, end - 1) : (end + 1);
     }
 
-    constexpr const char * const TINYFORMAT_FORMATTER_debugger_pathlast(const char * const path) {
+    constexpr const char* const TINYFORMAT_FORMATTER_debugger_pathlast(const char* const path) {
         return TINYFORMAT_FORMATTER_debugger_fromlastslash(path, TINYFORMAT_FORMATTER_debugger_strend(path));
     }
 
@@ -258,21 +258,22 @@
       gettimeofday( &TINYFORMAT_FORMATTER_timevalBegin, NULL );
 
     // https://stackoverflow.com/questions/1706346/file-macro-manipulation-handling-at-compile-time/
-    inline const char * const TINYFORMAT_FORMATTER_debugger_strend(const char * const str) {
+    inline const char* const TINYFORMAT_FORMATTER_debugger_strend(const char* const str) {
       return *str ? TINYFORMAT_FORMATTER_debugger_strend( str + 1 ) : str;
     }
 
-    inline const char * const TINYFORMAT_FORMATTER_debugger_fromlastslash(const char * const start, const char * const end) {
+    inline const char* const TINYFORMAT_FORMATTER_debugger_fromlastslash(const char* const start, const char* const end) {
       return ( end >= start && *end != '/' && *end != '\\' ) ? TINYFORMAT_FORMATTER_debugger_fromlastslash( start, end - 1 ) : ( end + 1 );
     }
 
-    inline const char * const TINYFORMAT_FORMATTER_debugger_pathlast(const char * const path) {
+    inline const char* const TINYFORMAT_FORMATTER_debugger_pathlast(const char* const path) {
       return TINYFORMAT_FORMATTER_debugger_fromlastslash( path, TINYFORMAT_FORMATTER_debugger_strend( path ) );
     }
 
+    // https://akrzemi1.wordpress.com/2011/05/11/parsing-strings-at-compile-time-part-i/
     #define DEBUGGER_PATH_HEADER \
-      std::cerr << secure_tinyformat( "%s|%s:%s ", \
-          TINYFORMAT_FORMATTER_debugger_pathlast( __FILE__ ) , __FUNCTION__, __LINE__ );
+      constexpr const char* myExpression = TINYFORMAT_FORMATTER_debugger_pathlast( __FILE__ ); \
+      std::cerr << secure_tinyformat( "%s|%s:%s ", myExpression , __FUNCTION__, __LINE__ );
   #endif
 
   #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_WITHOUT_TIME_STAMP
@@ -307,14 +308,14 @@
   #define LOG(level, ...) \
   do \
   { \
-    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
+      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
       _TINYFORMAT_FORMATTER_DEBUGGER_TIME_STAMP_HEADER( level ) \
       _TINYFORMAT_FORMATTER_DEBUGGER_TIME_FILE_PATH_HEADER( level ) \
       std::cerr << secure_tinyformat( __VA_ARGS__ ) << std::endl; \
+      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
     } \
-    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
   } \
   while( 0 )
 
@@ -324,14 +325,14 @@
   #define LOGLN(level, ...) \
   do \
   { \
-    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
+      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
       _TINYFORMAT_FORMATTER_DEBUGGER_TIME_STAMP_HEADER( level ) \
       _TINYFORMAT_FORMATTER_DEBUGGER_TIME_FILE_PATH_HEADER( level ) \
       std::cerr << secure_tinyformat( __VA_ARGS__ ); \
+      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
     } \
-    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
   } \
   while( 0 )
 
@@ -341,12 +342,12 @@
   #define LOGLC(level, ...) \
   do \
   { \
-    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
+      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
       std::cerr << secure_tinyformat( __VA_ARGS__ ) << std::flush; \
+      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
     } \
-    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
   } \
   while( 0 )
 
@@ -356,12 +357,12 @@
   #define LOGCD(level, code) \
   do \
   { \
-    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
+      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
       code; \
+      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
     } \
-    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
   } \
   while( 0 )
 
@@ -371,12 +372,12 @@
   #define PRINT(level, ...) \
   do \
   { \
-    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
+      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
       std::cerr << secure_tinyformat( __VA_ARGS__ ) << std::endl; \
+      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
     } \
-    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
   } \
   while( 0 )
 
@@ -386,12 +387,12 @@
   #define PRINTLN(level, ...) \
   do \
   { \
-    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
+      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
       std::cerr << secure_tinyformat( __VA_ARGS__ ) << std::flush; \
+      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
     } \
-    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
   } \
   while( 0 )
 
