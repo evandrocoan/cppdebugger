@@ -218,8 +218,8 @@
     }
 
     #define DEBUGGER_PATH_HEADER \
-      std::cerr << secure_tinyformat( "%s|%s:%s ", \
-          TINYFORMAT_FORMATTER_debugger_pathlast( __FILE__ ), __FUNCTION__, __LINE__ );
+      constexpr const char* myExpression = TINYFORMAT_FORMATTER_debugger_pathlast( __FILE__ ); \
+      std::cerr << secure_tinyformat( "%s|%s:%s ", myExpression , __FUNCTION__, __LINE__ );
 
   #else
     #include <sys/time.h>
@@ -272,7 +272,7 @@
 
     // https://akrzemi1.wordpress.com/2011/05/11/parsing-strings-at-compile-time-part-i/
     #define DEBUGGER_PATH_HEADER \
-      constexpr const char* myExpression = TINYFORMAT_FORMATTER_debugger_pathlast( __FILE__ ); \
+      const char* myExpression = TINYFORMAT_FORMATTER_debugger_pathlast( __FILE__ ); \
       std::cerr << secure_tinyformat( "%s|%s:%s ", myExpression , __FUNCTION__, __LINE__ );
   #endif
 
