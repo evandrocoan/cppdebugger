@@ -25,6 +25,9 @@
 #include "debugger.hpp"
 #include <stdio.h>
 
+// $ g++ -o main.exe -g -ggdb debugger.cpp test_debugger.cpp -DTINYFORMAT_FORMATTER_DEBUGGER_LEVEL=127 && ./main.exe
+// $ g++ -o main.exe -g -ggdb debugger.cpp test_debugger.cpp -DTINYFORMAT_FORMATTER_DEBUGGER_LEVEL=127 --std=c++98 && ./main.exe
+// $ g++ -o main.exe -g -ggdb debugger.cpp test_debugger.cpp -DTINYFORMAT_FORMATTER_DEBUGGER_LEVEL=127 --std=c++11 && ./main.exe
 int main(int argc, char const *argv[])
 {
     fprintf( stderr, "First test\n" );
