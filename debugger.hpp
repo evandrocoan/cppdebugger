@@ -47,6 +47,7 @@
 // https://github.com/bitcoin/bitcoin/issues/9423  --  tinyformat: Too many conversion specifiers in format string
 #define TINYFORMAT_ERROR(reasonString) throw std::runtime_error(reasonString)
 #include "tinyformat.h"
+#include "cpp98templates.h"
 
 #if defined(TINYFORMAT_USE_VARIADIC_TEMPLATES)
   // https://github.com/laanwj/bitcoin/blob/3b092bd9b6b3953d5c3052d57e4827dbd85941fd/src/util.h
@@ -66,12 +67,12 @@
 
 #else
   // Create a nth "variadic" template, see `tinyformat.h` variables TINYFORMAT_ARGTYPES_1, 2, 3... etc
-  #define TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT(n) \
-  template<class T0 TINYFORMAT_ARGTYPES(n,,,,)> \
-  inline std::string secure_tinyformat(const T0& v0 TINYFORMAT_VARARGS(n,,)) \
+  #define CPP98VARIADICTEMPLATE_FORMATTER_CREATE_NTH_FORMAT(n) \
+  template<class T0 CPP98VARIADICTEMPLATE_ARGTYPES(n,,,,)> \
+  inline std::string secure_tinyformat(const T0& v0 CPP98VARIADICTEMPLATE_VARARGS(n,,)) \
   { \
     try { \
-      return tfm::format( v0 TINYFORMAT_PASSARGS(n,,,,) ); \
+      return tfm::format( v0 CPP98VARIADICTEMPLATE_PASSARGS(n,,,,) ); \
     } \
     catch (std::runtime_error &error) { \
       return std::string( error.what() ) + std::string( ": '" ) + std::string( v0 ) + std::string( "'" ); \
@@ -82,9 +83,9 @@
   }
 
   // Create the "variadic" templates for C++ 98 from 1 up to the maximum defined on
-  // `tinyformat.h` variables TINYFORMAT_ARGTYPES_1, 2, 3... etc
-  TINYFORMAT_FOREACH_ARGNUM(TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT)
-  #undef TINYFORMAT_FORMATTER_CREATE_NTH_FORMAT
+  // `tinyformat.h` variables CPP98VARIADICTEMPLATE_ARGTYPES_1, 2, 3... etc
+  CPP98VARIADICTEMPLATE_FOREACH_ARGNUM(CPP98VARIADICTEMPLATE_FORMATTER_CREATE_NTH_FORMAT)
+  #undef CPP98VARIADICTEMPLATE_FORMATTER_CREATE_NTH_FORMAT
 #endif
 
 
