@@ -389,7 +389,7 @@ TINYFORMAT_DEFINE_FORMATVALUE_CHAR(unsigned char)
 // extra versions by hand.
 
 /*[[[cog
-maxParams = 16
+maxParams = 24
 
 def makeCommaSepLists(lineTemplate, elemTemplate, startInd=1):
     for j in range(startInd,maxParams+1):
@@ -431,6 +431,14 @@ cog.outl('#define TINYFORMAT_FOREACH_ARGNUM(m) \\\n    ' +
 #define TINYFORMAT_ARGTYPES_14 class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14
 #define TINYFORMAT_ARGTYPES_15 class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15
 #define TINYFORMAT_ARGTYPES_16 class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16
+#define TINYFORMAT_ARGTYPES_17 class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17
+#define TINYFORMAT_ARGTYPES_18 class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18
+#define TINYFORMAT_ARGTYPES_19 class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19
+#define TINYFORMAT_ARGTYPES_20 class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20
+#define TINYFORMAT_ARGTYPES_21 class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21
+#define TINYFORMAT_ARGTYPES_22 class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22
+#define TINYFORMAT_ARGTYPES_23 class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23
+#define TINYFORMAT_ARGTYPES_24 class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24
 
 #define TINYFORMAT_VARARGS_1 const T1& v1
 #define TINYFORMAT_VARARGS_2 const T1& v1, const T2& v2
@@ -448,6 +456,14 @@ cog.outl('#define TINYFORMAT_FOREACH_ARGNUM(m) \\\n    ' +
 #define TINYFORMAT_VARARGS_14 const T1& v1, const T2& v2, const T3& v3, const T4& v4, const T5& v5, const T6& v6, const T7& v7, const T8& v8, const T9& v9, const T10& v10, const T11& v11, const T12& v12, const T13& v13, const T14& v14
 #define TINYFORMAT_VARARGS_15 const T1& v1, const T2& v2, const T3& v3, const T4& v4, const T5& v5, const T6& v6, const T7& v7, const T8& v8, const T9& v9, const T10& v10, const T11& v11, const T12& v12, const T13& v13, const T14& v14, const T15& v15
 #define TINYFORMAT_VARARGS_16 const T1& v1, const T2& v2, const T3& v3, const T4& v4, const T5& v5, const T6& v6, const T7& v7, const T8& v8, const T9& v9, const T10& v10, const T11& v11, const T12& v12, const T13& v13, const T14& v14, const T15& v15, const T16& v16
+#define TINYFORMAT_VARARGS_17 const T1& v1, const T2& v2, const T3& v3, const T4& v4, const T5& v5, const T6& v6, const T7& v7, const T8& v8, const T9& v9, const T10& v10, const T11& v11, const T12& v12, const T13& v13, const T14& v14, const T15& v15, const T16& v16, const T17& v17
+#define TINYFORMAT_VARARGS_18 const T1& v1, const T2& v2, const T3& v3, const T4& v4, const T5& v5, const T6& v6, const T7& v7, const T8& v8, const T9& v9, const T10& v10, const T11& v11, const T12& v12, const T13& v13, const T14& v14, const T15& v15, const T16& v16, const T17& v17, const T18& v18
+#define TINYFORMAT_VARARGS_19 const T1& v1, const T2& v2, const T3& v3, const T4& v4, const T5& v5, const T6& v6, const T7& v7, const T8& v8, const T9& v9, const T10& v10, const T11& v11, const T12& v12, const T13& v13, const T14& v14, const T15& v15, const T16& v16, const T17& v17, const T18& v18, const T19& v19
+#define TINYFORMAT_VARARGS_20 const T1& v1, const T2& v2, const T3& v3, const T4& v4, const T5& v5, const T6& v6, const T7& v7, const T8& v8, const T9& v9, const T10& v10, const T11& v11, const T12& v12, const T13& v13, const T14& v14, const T15& v15, const T16& v16, const T17& v17, const T18& v18, const T19& v19, const T20& v20
+#define TINYFORMAT_VARARGS_21 const T1& v1, const T2& v2, const T3& v3, const T4& v4, const T5& v5, const T6& v6, const T7& v7, const T8& v8, const T9& v9, const T10& v10, const T11& v11, const T12& v12, const T13& v13, const T14& v14, const T15& v15, const T16& v16, const T17& v17, const T18& v18, const T19& v19, const T20& v20, const T21& v21
+#define TINYFORMAT_VARARGS_22 const T1& v1, const T2& v2, const T3& v3, const T4& v4, const T5& v5, const T6& v6, const T7& v7, const T8& v8, const T9& v9, const T10& v10, const T11& v11, const T12& v12, const T13& v13, const T14& v14, const T15& v15, const T16& v16, const T17& v17, const T18& v18, const T19& v19, const T20& v20, const T21& v21, const T22& v22
+#define TINYFORMAT_VARARGS_23 const T1& v1, const T2& v2, const T3& v3, const T4& v4, const T5& v5, const T6& v6, const T7& v7, const T8& v8, const T9& v9, const T10& v10, const T11& v11, const T12& v12, const T13& v13, const T14& v14, const T15& v15, const T16& v16, const T17& v17, const T18& v18, const T19& v19, const T20& v20, const T21& v21, const T22& v22, const T23& v23
+#define TINYFORMAT_VARARGS_24 const T1& v1, const T2& v2, const T3& v3, const T4& v4, const T5& v5, const T6& v6, const T7& v7, const T8& v8, const T9& v9, const T10& v10, const T11& v11, const T12& v12, const T13& v13, const T14& v14, const T15& v15, const T16& v16, const T17& v17, const T18& v18, const T19& v19, const T20& v20, const T21& v21, const T22& v22, const T23& v23, const T24& v24
 
 #define TINYFORMAT_PASSARGS_1 v1
 #define TINYFORMAT_PASSARGS_2 v1, v2
@@ -465,6 +481,14 @@ cog.outl('#define TINYFORMAT_FOREACH_ARGNUM(m) \\\n    ' +
 #define TINYFORMAT_PASSARGS_14 v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14
 #define TINYFORMAT_PASSARGS_15 v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15
 #define TINYFORMAT_PASSARGS_16 v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16
+#define TINYFORMAT_PASSARGS_17 v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17
+#define TINYFORMAT_PASSARGS_18 v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18
+#define TINYFORMAT_PASSARGS_19 v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19
+#define TINYFORMAT_PASSARGS_20 v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20
+#define TINYFORMAT_PASSARGS_21 v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21
+#define TINYFORMAT_PASSARGS_22 v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22
+#define TINYFORMAT_PASSARGS_23 v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23
+#define TINYFORMAT_PASSARGS_24 v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24
 
 #define TINYFORMAT_PASSARGS_TAIL_1
 #define TINYFORMAT_PASSARGS_TAIL_2 , v2
@@ -482,9 +506,17 @@ cog.outl('#define TINYFORMAT_FOREACH_ARGNUM(m) \\\n    ' +
 #define TINYFORMAT_PASSARGS_TAIL_14 , v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14
 #define TINYFORMAT_PASSARGS_TAIL_15 , v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15
 #define TINYFORMAT_PASSARGS_TAIL_16 , v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16
+#define TINYFORMAT_PASSARGS_TAIL_17 , v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17
+#define TINYFORMAT_PASSARGS_TAIL_18 , v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18
+#define TINYFORMAT_PASSARGS_TAIL_19 , v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19
+#define TINYFORMAT_PASSARGS_TAIL_20 , v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20
+#define TINYFORMAT_PASSARGS_TAIL_21 , v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21
+#define TINYFORMAT_PASSARGS_TAIL_22 , v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22
+#define TINYFORMAT_PASSARGS_TAIL_23 , v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23
+#define TINYFORMAT_PASSARGS_TAIL_24 , v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18, v19, v20, v21, v22, v23, v24
 
 #define TINYFORMAT_FOREACH_ARGNUM(m) \
-    m(1) m(2) m(3) m(4) m(5) m(6) m(7) m(8) m(9) m(10) m(11) m(12) m(13) m(14) m(15) m(16)
+    m(1) m(2) m(3) m(4) m(5) m(6) m(7) m(8) m(9) m(10) m(11) m(12) m(13) m(14) m(15) m(16) m(17) m(18) m(19) m(20) m(21) m(22) m(23) m(24)
 //[[[end]]]
 
 
