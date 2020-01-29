@@ -31,20 +31,20 @@
 int main(int argc, char const *argv[])
 {
     fprintf( stderr, "First test\n" );
-    LOG( 1, "Hi" );
-    LOG( 1, "Hi %s", 1 );
-    LOG( 1, "Hi %s" );
-    LOG( 1, "Hi %s %s", 1 );
+    TLOG( 1, "Hi" );
+    TLOG( 1, "Hi %s", 1 );
+    TLOG( 1, "Hi %s" );
+    TLOG( 1, "Hi %s %s", 1 );
 
     fprintf( stderr, "Second test\n" );
-    LOG( 1+1024, "Hi" );
-    LOG( 1+1024, "Hi %s", 1 );
-    LOG( 1+1024, "Hi %s" );
-    LOG( 1+1024, "Hi %s %s", 1 );
+    TPRINT( 1, "Hi" );
+    TPRINT( 1, "Hi %s", 1 );
+    TPRINT( 1, "Hi %s" );
+    TPRINT( 1, "Hi %s %s", 1 );
 
     fprintf( stderr, "Third test\n" );
-    LOG( 1+2048, "Hi" );
-    LOG( 1+2048, "Hi %s", 1 );
-    LOG( 1+2048, "Hi %s" );
-    LOG( 1+2048, "Hi %s %s", 1 );
+    TLOG( 1+2048, "Hi" );
+    TLOG( 1+2048, "Hi %s", 1 );
+    TLOG( 1+2048, "Hi %s" );
+    TLOG( 1+2048, "Hi %s %s", 1 );
 }

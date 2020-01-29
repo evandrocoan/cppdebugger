@@ -52,7 +52,7 @@
 #if defined(TINYFORMAT_USE_VARIADIC_TEMPLATES)
   // https://github.com/laanwj/bitcoin/blob/3b092bd9b6b3953d5c3052d57e4827dbd85941fd/src/util.h
   template<typename... Args>
-  std::string secure_tinyformat(const char*formattings, const Args&... arguments)
+  std::string secure_tinyformat(const char* formattings, const Args&... arguments)
   {
     try {
       return tfm::format( formattings, arguments... );
@@ -99,8 +99,7 @@
  *  1     - Error or very important messages.
  *  4     - Comment messages inside functions calls
  *  8     - High called functions, i.e., create very big massive text output
- *  1024  - Disable debugging with time stamp.
- *  2048  - Disable debugging with file path.
+ *
  *  4096  - Direct all `stderr` messages to a file.
  *  8192  - Put a lock around the `stderr` messages for multithreading synchronization.
  */
@@ -113,8 +112,6 @@
 #endif
 
 #define TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_DISABLED_DEBUG     0
-#define TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_WITHOUT_TIME_STAMP 1024
-#define TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_WITHOUT_PATHHEADER 2048
 #define TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_PUT_STDERR_TO_FILE 4096
 #define TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_STDERR_OUTPUT_LOCK 8192
 
@@ -137,20 +134,21 @@
       extern SimpleLock TINYFORMAT_FORMATTER_stderrlockoutput;
     #endif
 
-    #define _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
+    #define TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
       try { \
       TINYFORMAT_FORMATTER_stderrlockoutput.lock();
 
-    #define _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
+    #define TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
       TINYFORMAT_FORMATTER_stderrlockoutput.unlock(); \
       } \
       catch (...) { \
         std::cerr << secure_tinyformat( "Error: Unknown exception when locking the stderr output!" ) << std::flush; \
       }
   #else
-    #define _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK
-    #define _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK
+    #define TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK
+    #define TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK
   #endif
+
 
   #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_PUT_STDERR_TO_FILE
     class TINYFORMAT_FORMATTER_FileDebugger
@@ -166,6 +164,7 @@
     };
   #endif
 
+
   #if defined(TINYFORMAT_USE_VARIADIC_TEMPLATES)
     #include <chrono>
     #include <ctime>
@@ -175,7 +174,8 @@
     extern std::clock_t TINYFORMAT_FORMATTER_debugger_current_saved_c_time;
     extern std::chrono::time_point< std::chrono::high_resolution_clock > TINYFORMAT_FORMATTER_debugger_current_saved_chrono_time;
 
-    #define DEBUGGER_TIME_HEADER \
+    #define TINYFORMAT_FORMATTER_DEBUGGER_TIME_HEADER do \
+    { \
       /* std::clock_t ctime_clock_now = std::clock(); */ \
       auto chrono_clock_now = std::chrono::high_resolution_clock::now(); \
       auto duration = chrono_clock_now.time_since_epoch(); \
@@ -203,7 +203,9 @@
           /* ( 1000.0 * ( ctime_clock_now - TINYFORMAT_FORMATTER_debugger_current_saved_c_time ) ) / CLOCKS_PER_SEC */ \
       ); \
       /* TINYFORMAT_FORMATTER_debugger_current_saved_c_time = ctime_clock_now; */ \
-      TINYFORMAT_FORMATTER_debugger_current_saved_chrono_time = chrono_clock_now;
+      TINYFORMAT_FORMATTER_debugger_current_saved_chrono_time = chrono_clock_now; \
+    } \
+    while( 0 );
 
     // https://stackoverflow.com/questions/1706346/file-macro-manipulation-handling-at-compile-time/
     constexpr const char* const TINYFORMAT_FORMATTER_debugger_strend(const char* const str) {
@@ -218,9 +220,12 @@
         return TINYFORMAT_FORMATTER_debugger_fromlastslash(path, TINYFORMAT_FORMATTER_debugger_strend(path));
     }
 
-    #define DEBUGGER_PATH_HEADER \
+    #define TINYFORMAT_FORMATTER_DEBUGGER_PATH_HEADER do \
+    { \
       constexpr const char* myExpression = TINYFORMAT_FORMATTER_debugger_pathlast( __FILE__ ); \
-      std::cerr << secure_tinyformat( "%s|%s:%s ", myExpression , __FUNCTION__, __LINE__ );
+      std::cerr << secure_tinyformat( "%s|%s:%s ", myExpression , __FUNCTION__, __LINE__ ); \
+    } \
+    while( 0 );
 
   #else
     #include <sys/time.h>
@@ -235,17 +240,18 @@
       return *result;
     }
 
-    #define TINYFORMAT_FORMATTER_timersub(a, b, result) \
-      do { \
-        (result)->tv_sec = (a)->tv_sec - (b)->tv_sec; \
-        (result)->tv_usec = (a)->tv_usec - (b)->tv_usec; \
-        if ((result)->tv_usec < 0) { \
-          --(result)->tv_sec; \
-          (result)->tv_usec += 1000000; \
-        } \
-      } while (0)
+    #define TINYFORMAT_FORMATTER_timersub(a, b, result) do \
+    { \
+      (result)->tv_sec = (a)->tv_sec - (b)->tv_sec; \
+      (result)->tv_usec = (a)->tv_usec - (b)->tv_usec; \
+      if ((result)->tv_usec < 0) { \
+        --(result)->tv_sec; \
+        (result)->tv_usec += 1000000; \
+      } \
+    } while( 0 );
 
-    #define DEBUGGER_TIME_HEADER \
+    #define TINYFORMAT_FORMATTER_DEBUGGER_TIME_HEADER do \
+    { \
       time_t theTime = time( NULL ); \
       /* https://www.tutorialspoint.com/c_standard_library/c_function_localtime.htm */ \
       struct tm* aTime = localtime( &theTime ); \
@@ -256,7 +262,9 @@
           aTime->tm_hour, aTime->tm_min, aTime->tm_sec, TINYFORMAT_FORMATTER_timevalEnd.tv_usec, \
           TINYFORMAT_FORMATTER_timevalDiff.tv_sec, TINYFORMAT_FORMATTER_timevalDiff.tv_usec \
       ); \
-      gettimeofday( &TINYFORMAT_FORMATTER_timevalBegin, NULL );
+      gettimeofday( &TINYFORMAT_FORMATTER_timevalBegin, NULL ); \
+    } \
+    while( 0 );
 
     // https://stackoverflow.com/questions/1706346/file-macro-manipulation-handling-at-compile-time/
     inline const char* const TINYFORMAT_FORMATTER_debugger_strend(const char* const str) {
@@ -272,27 +280,12 @@
     }
 
     // https://akrzemi1.wordpress.com/2011/05/11/parsing-strings-at-compile-time-part-i/
-    #define DEBUGGER_PATH_HEADER \
+    #define TINYFORMAT_FORMATTER_DEBUGGER_PATH_HEADER do \
+    { \
       const char* myExpression = TINYFORMAT_FORMATTER_debugger_pathlast( __FILE__ ); \
-      std::cerr << secure_tinyformat( "%s|%s:%s ", myExpression , __FUNCTION__, __LINE__ );
-  #endif
-
-  #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_WITHOUT_TIME_STAMP
-    #define _TINYFORMAT_FORMATTER_DEBUGGER_TIME_STAMP_HEADER(level)
-  #else
-    #define _TINYFORMAT_FORMATTER_DEBUGGER_TIME_STAMP_HEADER(level) \
-      if( !( (level) & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_WITHOUT_TIME_STAMP ) ) { \
-        DEBUGGER_TIME_HEADER \
-      }
-  #endif
-
-  #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_WITHOUT_PATHHEADER
-    #define _TINYFORMAT_FORMATTER_DEBUGGER_TIME_FILE_PATH_HEADER(level)
-  #else
-    #define _TINYFORMAT_FORMATTER_DEBUGGER_TIME_FILE_PATH_HEADER(level) \
-      if( !( (level) & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_WITHOUT_PATHHEADER ) ) { \
-        DEBUGGER_PATH_HEADER \
-      }
+      std::cerr << secure_tinyformat( "%s|%s:%s ", myExpression , __FUNCTION__, __LINE__ ); \
+    } \
+    while( 0 );
   #endif
 
   /**
@@ -306,48 +299,60 @@
    * @param level     the debugging desired level to be printed.
    * @param ...       variable number os formatting arguments parameters.
    */
-  #define LOG(level, ...) \
-  do \
+  #define TLOG(level, ...) do \
   { \
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
-      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
-      _TINYFORMAT_FORMATTER_DEBUGGER_TIME_STAMP_HEADER( level ) \
-      _TINYFORMAT_FORMATTER_DEBUGGER_TIME_FILE_PATH_HEADER( level ) \
+      TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
+      TINYFORMAT_FORMATTER_DEBUGGER_TIME_HEADER \
+      TINYFORMAT_FORMATTER_DEBUGGER_PATH_HEADER \
       std::cerr << secure_tinyformat( __VA_ARGS__ ) << std::endl; \
-      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
+      TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
     } \
   } \
   while( 0 )
 
   /**
-   * The same as LOG(...) just above, but do not put automatically a new line.
+   * The same as TLOG(...) just above, but do not put automatically a new line.
    */
-  #define LOGLN(level, ...) \
+  #define TLOGLN(level, ...) \
   do \
   { \
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
-      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
-      _TINYFORMAT_FORMATTER_DEBUGGER_TIME_STAMP_HEADER( level ) \
-      _TINYFORMAT_FORMATTER_DEBUGGER_TIME_FILE_PATH_HEADER( level ) \
+      TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
+      TINYFORMAT_FORMATTER_DEBUGGER_TIME_HEADER \
+      TINYFORMAT_FORMATTER_DEBUGGER_PATH_HEADER \
       std::cerr << secure_tinyformat( __VA_ARGS__ ); \
-      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
+      TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
     } \
   } \
   while( 0 )
 
   /**
-   * The same as LOGLC(...) just above, but do not put automatically a new line, neither time stamp.
+   * The same as TLOG(...) just above, but it also print the log message when disabled ignoring the log level.
    */
-  #define LOGLC(level, ...) \
+  #define TLOGERR(...) do \
+  { \
+    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
+    TINYFORMAT_FORMATTER_DEBUGGER_TIME_HEADER \
+    TINYFORMAT_FORMATTER_DEBUGGER_PATH_HEADER \
+    std::cerr << secure_tinyformat( __VA_ARGS__ ) << std::endl; \
+    TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
+  } \
+  while( 0 )
+
+  /**
+   * The same as TLOGLC(...) just above, but do not put automatically a new line, neither time stamp.
+   */
+  #define TLOGLC(level, ...) \
   do \
   { \
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
-      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
+      TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
       std::cerr << secure_tinyformat( __VA_ARGS__ ) << std::flush; \
-      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
+      TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
     } \
   } \
   while( 0 )
@@ -355,44 +360,44 @@
   /**
    * The same a LOG, but used to hide a whole code block behind the debug level.
    */
-  #define LOGCD(level, code) \
+  #define TLOGCD(level, code) \
   do \
   { \
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
-      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
+      TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
       code; \
-      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
+      TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
     } \
   } \
   while( 0 )
 
   /**
-   * The same as LOG(...), but it is for standard program output.
+   * The same as TLOG(...), but it is for standard program output.
    */
-  #define PRINT(level, ...) \
+  #define TPRINT(level, ...) \
   do \
   { \
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
-      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
+      TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
       std::cerr << secure_tinyformat( __VA_ARGS__ ) << std::endl; \
-      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
+      TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
     } \
   } \
   while( 0 )
 
   /**
-   * The same as LOGLN(...), but it is for standard program output.
+   * The same as TLOGLN(...), but it is for standard program output.
    */
-  #define PRINTLN(level, ...) \
+  #define TPRINTLN(level, ...) \
   do \
   { \
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
-      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
+      TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
       std::cerr << secure_tinyformat( __VA_ARGS__ ) << std::flush; \
-      _TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
+      TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
     } \
   } \
   while( 0 )
@@ -400,17 +405,30 @@
 
 #else
 
-  #define DEBUGGER_TIME_HEADER
-  #define DEBUGGER_PATH_HEADER
-  #define LOG(level, ...)
-  #define LOGLN(level, ...)
-  #define LOGLC(level, ...)
-  #define LOGCD(level, ...)
+  #define TINYFORMAT_FORMATTER_DEBUGGER_TIME_HEADER
+  #define TINYFORMAT_FORMATTER_DEBUGGER_PATH_HEADER
+
+  #define TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK
+  #define TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK
+
+  #define TLOG(level, ...)
+  #define TLOGLN(level, ...)
+  #define TLOGLC(level, ...)
+  #define TLOGCD(level, ...)
 
   /**
-   * The same as LOG(...), but it is for standard program output when the debugging is disabled.
+   * The same as TLOG(...) just above, but it also print the log message when disabled ignoring the log level.
    */
-  #define PRINT(level, ...) \
+  #define TLOGERR(...) do \
+  { \
+    std::cerr << secure_tinyformat( __VA_ARGS__ ) << std::endl; \
+  } \
+  while( 0 )
+
+  /**
+   * The same as TLOG(...), but it is for standard program output when the debugging is disabled.
+   */
+  #define TPRINT(level, ...) \
   do \
   { \
     std::cerr << secure_tinyformat( __VA_ARGS__ ) << std::endl; \
@@ -418,9 +436,9 @@
   while( 0 )
 
   /**
-   * The same as LOGLN(...), but it is for standard program output when the debugging is disabled.
+   * The same as TLOGLN(...), but it is for standard program output when the debugging is disabled.
    */
-  #define PRINTLN(level, ...) \
+  #define TPRINTLN(level, ...) \
   do \
   { \
     std::cerr << secure_tinyformat( __VA_ARGS__ ) << std::flush; \
