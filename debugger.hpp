@@ -180,7 +180,7 @@
       TINYFORMAT_FORMATTER_stderrlockoutput.unlock(); \
       } \
       catch (...) { \
-        secure_tinyformat( std::cerr, "Error: Unknown exception when locking the stderr output!" ); \
+        std::cerr << secure_tinyformat( "Error: Unknown exception when locking the stderr output!" ); \
         std::cerr << std::flush; \
       }
   #else
@@ -221,7 +221,7 @@
   #define TINYFORMAT_FORMATTER_DEBUGGER_PATH_HEADER do \
   { \
     TINYFORMAT_FORMATTER_CONSTEXPR const char* myExpression = TINYFORMAT_FORMATTER_debugger_pathlast( __FILE__ ); \
-    secure_tinyformat( std::cerr, "%s|%s:%s ", myExpression , __FUNCTION__, __LINE__ ); \
+    std::cerr << secure_tinyformat( "%s|%s:%s ", myExpression , __FUNCTION__, __LINE__ ); \
   } \
   while( 0 );
 
@@ -257,7 +257,7 @@
       time_t theTime = time( NULL ); \
       /* https://www.tutorialspoint.com/c_standard_library/c_function_localtime.htm */ \
       struct tm* aTime = localtime( &theTime ); \
-      secure_tinyformat( std::cerr, "%04d/%02d/%02d %02d:%02d:%02d:%03d.%03d %.3e ", /* %.3e */ \
+      std::cerr << secure_tinyformat( "%04d/%02d/%02d %02d:%02d:%02d:%03d.%03d %.3e ", /* %.3e */ \
           aTime->tm_year + 1900, aTime->tm_mon + 1, aTime->tm_mday, \
           aTime->tm_hour, minutes.count(), seconds.count(), milliseconds.count(), microseconds.count(), /* nanoseconds.count(), */ \
           std::chrono::duration<double, std::milli>( chrono_clock_now - TINYFORMAT_FORMATTER_debugger_current_saved_chrono_time ).count() \
@@ -297,7 +297,7 @@
       struct tm* aTime = localtime( &theTime ); \
       gettimeofday( &TINYFORMAT_FORMATTER_timevalEnd, NULL ); \
       TINYFORMAT_FORMATTER_timersub( &TINYFORMAT_FORMATTER_timevalEnd, &TINYFORMAT_FORMATTER_timevalBegin, &TINYFORMAT_FORMATTER_timevalDiff ); \
-      secure_tinyformat( std::cerr, "%04d/%02d/%02d %02d:%02d:%02d.%06i %ld.%06ld ", \
+      std::cerr << secure_tinyformat( "%04d/%02d/%02d %02d:%02d:%02d.%06i %ld.%06ld ", \
           aTime->tm_year + 1900, aTime->tm_mon + 1, aTime->tm_mday, \
           aTime->tm_hour, aTime->tm_min, aTime->tm_sec, TINYFORMAT_FORMATTER_timevalEnd.tv_usec, \
           TINYFORMAT_FORMATTER_timevalDiff.tv_sec, TINYFORMAT_FORMATTER_timevalDiff.tv_usec \
@@ -326,7 +326,7 @@
       TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
       TINYFORMAT_FORMATTER_DEBUGGER_TIME_HEADER \
       TINYFORMAT_FORMATTER_DEBUGGER_PATH_HEADER \
-      secure_tinyformat( std::cerr, __VA_ARGS__ ); \
+      std::cerr << secure_tinyformat( __VA_ARGS__ ); \
       std::cerr << std::endl; \
       TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
     } \
@@ -344,7 +344,7 @@
       TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
       TINYFORMAT_FORMATTER_DEBUGGER_TIME_HEADER \
       TINYFORMAT_FORMATTER_DEBUGGER_PATH_HEADER \
-      secure_tinyformat( std::cerr, __VA_ARGS__ ); \
+      std::cerr << secure_tinyformat( __VA_ARGS__ ); \
       std::cerr << std::flush; \
       TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
     } \
@@ -359,7 +359,7 @@
     TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
     TINYFORMAT_FORMATTER_DEBUGGER_TIME_HEADER \
     TINYFORMAT_FORMATTER_DEBUGGER_PATH_HEADER \
-    secure_tinyformat( std::cerr, __VA_ARGS__ ); \
+    std::cerr << secure_tinyformat( __VA_ARGS__ ); \
     std::cerr << std::endl; \
     TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
   } \
@@ -374,7 +374,7 @@
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
       TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
-      secure_tinyformat( std::cerr, __VA_ARGS__ ); \
+      std::cerr << secure_tinyformat( __VA_ARGS__ ); \
       std::cerr << std::flush; \
       TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
     } \
@@ -405,7 +405,7 @@
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
       TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
-      secure_tinyformat( std::cerr, __VA_ARGS__ ); \
+      std::cerr << secure_tinyformat( __VA_ARGS__ ); \
       std::cerr << std::endl; \
       TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
     } \
@@ -421,7 +421,7 @@
     if( (level) & (TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) ) \
     { \
       TINYFORMAT_FORMATTER_DEBUGGER_STDERR_LOCK \
-      secure_tinyformat( std::cerr, __VA_ARGS__ ); \
+      std::cerr << secure_tinyformat( __VA_ARGS__ ); \
       std::cerr << std::flush; \
       TINYFORMAT_FORMATTER_DEBUGGER_STDERR_UNLOCK \
     } \
@@ -446,7 +446,7 @@
    */
   #define TLOGERR(...) do \
   { \
-    secure_tinyformat( std::cerr, __VA_ARGS__ ); \
+    std::cerr << secure_tinyformat( __VA_ARGS__ ); \
     std::cerr << std::endl; \
   } \
   while( 0 )
@@ -457,7 +457,7 @@
   #define TPRINT(level, ...) \
   do \
   { \
-    secure_tinyformat( std::cerr, __VA_ARGS__ ); \
+    std::cerr << secure_tinyformat( __VA_ARGS__ ); \
     std::cerr << std::endl; \
   } \
   while( 0 )
@@ -468,7 +468,7 @@
   #define TPRINTLN(level, ...) \
   do \
   { \
-    secure_tinyformat( std::cerr, __VA_ARGS__ ); \
+    std::cerr << secure_tinyformat( __VA_ARGS__ ); \
     std::cerr << std::flush; \
   } \
   while( 0 )

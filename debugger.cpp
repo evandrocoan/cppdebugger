@@ -53,8 +53,8 @@
 // https://stackoverflow.com/questions/1433204/how-do-i-use-extern-to-share-variables-between-source-files
 #if TINYFORMAT_FORMATTER_DEBUGGER_LEVEL & TINYFORMAT_FORMATTER_DEBUGGER_LEVEL_PUT_STDERR_TO_FILE
 
-  TINYFORMAT_FORMATTER_FileDebugger::TINYFORMAT_FORMATTER_FileDebugger() {
-
+  TINYFORMAT_FORMATTER_FileDebugger::TINYFORMAT_FORMATTER_FileDebugger()
+  {
     // http://www.cplusplus.com/reference/cstdio/freopen/
     if( TINYFORMAT_FORMATTER_FileDebugger::isstarted ) {
       std::cerr << "Error: freopen(stderr) is already open!" << std::endl;
@@ -81,7 +81,8 @@
     }
   }
 
-  TINYFORMAT_FORMATTER_FileDebugger* TINYFORMAT_FORMATTER_FileDebugger::getInstance() {
+  TINYFORMAT_FORMATTER_FileDebugger* TINYFORMAT_FORMATTER_FileDebugger::getInstance()
+  {
     if( TINYFORMAT_FORMATTER_FileDebugger::isstarted ) {
       return TINYFORMAT_FORMATTER_FileDebugger::instance;
     }
