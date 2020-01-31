@@ -50,6 +50,8 @@
 #include "cpp98templates.h"
 
 #if defined(TINYFORMAT_USE_VARIADIC_TEMPLATES)
+  #define TINYFORMAT_FORMATTER_CONSTEXPR constexpr
+
   // https://github.com/laanwj/bitcoin/blob/3b092bd9b6b3953d5c3052d57e4827dbd85941fd/src/util.h
   template<typename... Args>
   std::string secure_tinyformat(const char* formattings, const Args&... arguments)
@@ -66,6 +68,8 @@
   }
 
 #else
+  #define TINYFORMAT_FORMATTER_CONSTEXPR
+
   // Create a nth "variadic" template, see `tinyformat.h` variables TINYFORMAT_ARGTYPES_1, 2, 3... etc
   #define CPP98VARIADICTEMPLATE_FORMATTER_CREATE_NTH_FORMAT(n) \
   template<class T0 CPP98VARIADICTEMPLATE_ARGTYPES(n,,,,)> \
@@ -165,6 +169,28 @@
   #endif
 
 
+  // https://stackoverflow.com/questions/1706346/file-macro-manipulation-handling-at-compile-time/
+  TINYFORMAT_FORMATTER_CONSTEXPR inline const char* const TINYFORMAT_FORMATTER_debugger_strend(const char* const str) {
+      return *str ? TINYFORMAT_FORMATTER_debugger_strend(str + 1) : str;
+  }
+
+  TINYFORMAT_FORMATTER_CONSTEXPR inline const char* const TINYFORMAT_FORMATTER_debugger_fromlastslash(const char* const start, const char* const end) {
+      return (end >= start && *end != '/' && *end != '\\') ? TINYFORMAT_FORMATTER_debugger_fromlastslash(start, end - 1) : (end + 1);
+  }
+
+  TINYFORMAT_FORMATTER_CONSTEXPR inline const char* const TINYFORMAT_FORMATTER_debugger_pathlast(const char* const path) {
+      return TINYFORMAT_FORMATTER_debugger_fromlastslash(path, TINYFORMAT_FORMATTER_debugger_strend(path));
+  }
+
+  // https://akrzemi1.wordpress.com/2011/05/11/parsing-strings-at-compile-time-part-i/
+  #define TINYFORMAT_FORMATTER_DEBUGGER_PATH_HEADER do \
+  { \
+    TINYFORMAT_FORMATTER_CONSTEXPR const char* myExpression = TINYFORMAT_FORMATTER_debugger_pathlast( __FILE__ ); \
+    std::cerr << secure_tinyformat( "%s|%s:%s ", myExpression , __FUNCTION__, __LINE__ ); \
+  } \
+  while( 0 );
+
+
   #if defined(TINYFORMAT_USE_VARIADIC_TEMPLATES)
     #include <chrono>
     #include <ctime>
@@ -206,27 +232,6 @@
       TINYFORMAT_FORMATTER_debugger_current_saved_chrono_time = chrono_clock_now; \
     } \
     while( 0 );
-
-    // https://stackoverflow.com/questions/1706346/file-macro-manipulation-handling-at-compile-time/
-    constexpr const char* const TINYFORMAT_FORMATTER_debugger_strend(const char* const str) {
-        return *str ? TINYFORMAT_FORMATTER_debugger_strend(str + 1) : str;
-    }
-
-    constexpr const char* const TINYFORMAT_FORMATTER_debugger_fromlastslash(const char* const start, const char* const end) {
-        return (end >= start && *end != '/' && *end != '\\') ? TINYFORMAT_FORMATTER_debugger_fromlastslash(start, end - 1) : (end + 1);
-    }
-
-    constexpr const char* const TINYFORMAT_FORMATTER_debugger_pathlast(const char* const path) {
-        return TINYFORMAT_FORMATTER_debugger_fromlastslash(path, TINYFORMAT_FORMATTER_debugger_strend(path));
-    }
-
-    #define TINYFORMAT_FORMATTER_DEBUGGER_PATH_HEADER do \
-    { \
-      constexpr const char* myExpression = TINYFORMAT_FORMATTER_debugger_pathlast( __FILE__ ); \
-      std::cerr << secure_tinyformat( "%s|%s:%s ", myExpression , __FUNCTION__, __LINE__ ); \
-    } \
-    while( 0 );
-
   #else
     #include <sys/time.h>
 
@@ -265,28 +270,8 @@
       gettimeofday( &TINYFORMAT_FORMATTER_timevalBegin, NULL ); \
     } \
     while( 0 );
-
-    // https://stackoverflow.com/questions/1706346/file-macro-manipulation-handling-at-compile-time/
-    inline const char* const TINYFORMAT_FORMATTER_debugger_strend(const char* const str) {
-      return *str ? TINYFORMAT_FORMATTER_debugger_strend( str + 1 ) : str;
-    }
-
-    inline const char* const TINYFORMAT_FORMATTER_debugger_fromlastslash(const char* const start, const char* const end) {
-      return ( end >= start && *end != '/' && *end != '\\' ) ? TINYFORMAT_FORMATTER_debugger_fromlastslash( start, end - 1 ) : ( end + 1 );
-    }
-
-    inline const char* const TINYFORMAT_FORMATTER_debugger_pathlast(const char* const path) {
-      return TINYFORMAT_FORMATTER_debugger_fromlastslash( path, TINYFORMAT_FORMATTER_debugger_strend( path ) );
-    }
-
-    // https://akrzemi1.wordpress.com/2011/05/11/parsing-strings-at-compile-time-part-i/
-    #define TINYFORMAT_FORMATTER_DEBUGGER_PATH_HEADER do \
-    { \
-      const char* myExpression = TINYFORMAT_FORMATTER_debugger_pathlast( __FILE__ ); \
-      std::cerr << secure_tinyformat( "%s|%s:%s ", myExpression , __FUNCTION__, __LINE__ ); \
-    } \
-    while( 0 );
   #endif
+
 
   /**
    * Print like function for logging putting a new line at the end of string. See the variables
@@ -404,7 +389,6 @@
 
 
 #else
-
   #define TINYFORMAT_FORMATTER_DEBUGGER_TIME_HEADER
   #define TINYFORMAT_FORMATTER_DEBUGGER_PATH_HEADER
 
