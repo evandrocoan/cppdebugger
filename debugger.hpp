@@ -131,15 +131,15 @@
 /**
  * This is to view internal program data while execution. Default value: 0
  *
- * A value like 127 binary(111111) enables all masked debugging levels.
+ * A value like 127 binary(111111) enables all masked debugging levels
  *
- *  0     - Disables this feature.
- *  1     - Error or very important messages.
+ *  0     - Disables this feature
+ *  1     - Error or very important messages
  *  4     - Comment messages inside functions calls
  *  8     - High called functions, i.e., create very big massive text output
  *
- *  4096  - Direct all `stderr` messages to a file.
- *  8192  - Put a lock around the `stderr` messages for multithreading synchronization.
+ *  4096  - Direct all `stderr` messages to a file
+ *  8192  - Put a lock around the `stderr` messages for multithreading synchronization
  */
 #if TINYFORMAT_FORMATTER_DEBUGGER_IS_MACRO_EMPTY(TINYFORMAT_FORMATTER_DEBUGGER_LEVEL) == 1
   #undef TINYFORMAT_FORMATTER_DEBUGGER_LEVEL
